@@ -195,3 +195,6 @@ plugins:
 
 # Custom base text font size
 # set base-font-size in _sass/yat.scss
+
+# theme: jekyll-theme-yat
+remote_theme: "jeffreytse/jekyll-theme-yat"

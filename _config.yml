@@ -129,19 +129,19 @@ code_badge:
 
 # If you want to link only specific pages in your header, uncomment
 # this and add the path to the pages in order as they should show up
-# header_pages:
-#   - index.html
-#   - archives.html
-#   - categories.html
-#   - tags.html
-#   - about.md
+header_pages:
+  - index.html
+  - archives.html
+  - categories.html
+  - tags.html
+  # - about.html
 
 # Page default value
-# defaults:
-#   home:
-#     heading: "Your awesome heading"
-#     subheading: "Your awesome subheading"
-#     banner: "Your image url"
+defaults:
+  home:
+    heading: "往者不可谏，来者犹可追"
+    subheading: "《论语·微子》"
+    banner: "Your image url"
 
 # Banner default settings
 # These banner settings are for global banner default, but you can also
@@ -189,3 +189,9 @@ plugins:
   - jekyll-sitemap
   - jekyll-paginate
   - jekyll-spaceship
+
+# Custom color of tags in a banner
+# set color of class .post-tag in _sass/yat/_layout.scss:655
+
+# Custom base text font size
+# set base-font-size in _sass/yat.scss

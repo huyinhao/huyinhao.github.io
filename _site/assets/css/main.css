@@ -41,7 +41,7 @@ blockquote { color: #828282; border-left: 4px solid #e8e8e8; padding-left: 15px;
 blockquote > :last-child { margin-bottom: 0; }
 
 /** Code formatting */
-pre, code { font-size: 15px; color: #454545; }
+pre, code { font-size: 14px; color: #454545; }
 
 *:not(pre) > code { padding: 3px 6px; border-radius: 3px; background-color: #eee; margin: 0 5px; }
 
@@ -297,7 +297,7 @@ html[data-scroll-status='down'] .framework .sidebar { top: 20px; }
 
 @media screen and (max-width: 600px) { .page-banner .page-banner-inner .post-tags { padding-right: 0; } }
 
-.page-banner .page-banner-inner .post-tags .post-tag { font-size: 18px; display: inline-block; text-decoration: none; margin: 9px 12px 0 0; color: #fff; }
+.page-banner .page-banner-inner .post-tags .post-tag { font-size: 18px; display: inline-block; text-decoration: none; margin: 9px 12px 0 0; color: #2af3a6; }
 
 .page-banner .page-banner-inner .post-tags .post-tag:hover { text-decoration: underline; }
 

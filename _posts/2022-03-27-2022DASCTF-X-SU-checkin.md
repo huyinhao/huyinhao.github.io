@@ -1,20 +1,20 @@
 ---
 layout: post
 title: 2022DASCTF X SU checkin
-subheading:
+subheading: 三月春季挑战赛
 author: dayfly
 categories: pwn
 banner:
-  # video: https://vjs.zencdn.net/v/oceans.mp4
+  video: null
   loop: true
   volume: 0.8
   start_at: 8.5
-  image: https://bit.ly/3xTmdUP
+  image: https://images.pexels.com/photos/1435075/pexels-photo-1435075.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
   opacity: 0.618
   background: "#000"
   height: "100vh"
   min_height: "38vh"
-  heading_style: "font-size: 4.25em; font-weight: bold; text-decoration: underline"
+  heading_style: "font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1400px"
   subheading_style: "color: gold"
 tags: [pwn, stack pivoting]
 sidebar: []
@@ -134,3 +134,8 @@ while True:
                 p.close()
                 pass
 ```
+
+## Reference
+- [Stack Pivoting][1]
+
+  [1]: https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/fancy-rop/

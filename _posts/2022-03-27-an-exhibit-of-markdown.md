@@ -3,7 +3,21 @@ layout: post
 title: An exhibit of Markdown
 subtitle: Each post also has a subtitle
 categories: markdown
-tags: [example, markdown]
+banner:
+  video: null
+  loop: true
+  volume: 0.8
+  start_at: 8.5
+  image: https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260
+  opacity: 0.618
+  background: "#000"
+  height: "100vh"
+  min_height: "38vh"
+  heading_style: "font-size: 5em; font-weight: bold; text-decoration: none"
+  subheading_style: "color: gold"
+  brand-colors: "#f2cb05"
+
+tags: [markdown]
 ---
 
 This note demonstrates some of what [Markdown][1] is capable of doing.

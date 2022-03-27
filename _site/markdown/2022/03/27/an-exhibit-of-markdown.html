@@ -14,15 +14,15 @@
 <meta property="og:locale" content="zh_CN">
 <meta name="description" content="This note demonstrates some of what Markdown is capable of doing.">
 <meta property="og:description" content="This note demonstrates some of what Markdown is capable of doing.">
-<link rel="canonical" href="http://localhost:4000/markdown/2018/12/05/an-exhibit-of-markdown.html">
-<meta property="og:url" content="http://localhost:4000/markdown/2018/12/05/an-exhibit-of-markdown.html">
+<link rel="canonical" href="http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html">
+<meta property="og:url" content="http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html">
 <meta property="og:site_name" content="dayfly の note">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2018-12-05T00:00:00+08:00">
+<meta property="article:published_time" content="2022-03-27T00:00:00+08:00">
 <meta name="twitter:card" content="summary">
 <meta property="twitter:title" content="An exhibit of Markdown">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"huyinhao"},"dateModified":"2018-12-05T00:00:00+08:00","datePublished":"2018-12-05T00:00:00+08:00","description":"This note demonstrates some of what Markdown is capable of doing.","headline":"An exhibit of Markdown","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/markdown/2018/12/05/an-exhibit-of-markdown.html"},"url":"http://localhost:4000/markdown/2018/12/05/an-exhibit-of-markdown.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"huyinhao"},"dateModified":"2022-03-27T00:00:00+08:00","datePublished":"2022-03-27T00:00:00+08:00","description":"This note demonstrates some of what Markdown is capable of doing.","headline":"An exhibit of Markdown","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html"},"url":"http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="shortcut icon" href="">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -245,7 +245,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<header class="site-header " role="banner">
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
 
   <div class="wrapper">
     <div class="site-header-inner">
@@ -264,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
           </label>
 
           <div class="trigger">
-<a class="page-link" href="/about.html">ABOUT</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/">HOME</a><a class="page-link" href="/tags.html">TAGS</a>
+<a class="page-link" href="/">HOME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
 
 
 
@@ -281,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var documentElement = document.documentElement;
 
     function storeScrollData() {
-      var y = getScrollPos().y;var scrollStatus = "";
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
 
       if (y <= 0) {
         scrollStatus = "top";
@@ -447,7 +457,103 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<script>
+
+
+
+
+
+
+
+
+
+
+<style>
+    html .page-banner {
+      background: #000;
+    }
+  </style>
+<style>html .page-banner {
+      height:  36.8vh;
+      min-height: 38vh;
+    }
+    html[data-scroll-status="top"] .page-banner {
+      height: 100vh;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-img > *:first-child {
+      opacity: 0.618;
+    }
+
+    html[data-theme="dark"] .page-banner .page-banner-img > *:first-child {
+      opacity: 0.443724;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(1) {
+      font-size: 5em; font-weight: bold; text-decoration: none
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(2) {
+      color: gold
+    }
+  </style>
+<section class="page-banner">
+    <div class="page-banner-img">
+<div style="background-image: url(https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260)"></div>
+        <img class="img-placeholder" src="https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260">
+</div>
+    <div class="wrapper">
+      <div class="page-banner-inner">
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">An exhibit of Markdown</h1>
+  <h2 class="post-subtitle">Each post also has a subtitle</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-03-27T00:00:00+08:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Mar 27, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+  </p>
+<div class="post-tags"><a class="post-tag" href="/tags.html#markdown">#markdown</a></div></header>
+</div>
+    </div>
+  </section><script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -614,53 +720,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<header class="post-header">
-  <h1 class="post-title p-name" itemprop="name headline">An exhibit of Markdown</h1>
-  <h2 class="post-subtitle">Each post also has a subtitle</h2>
-
-  <p class="post-meta">
-    <time class="dt-published" datetime="2018-12-05T00:00:00+08:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Dec 05, 2018
-    </time>
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
-  </p>
-<div class="post-tags">
-<a class="post-tag" href="/tags.html#example">#example</a><a class="post-tag" href="/tags.html#markdown">#markdown</a>
-</div></header>
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
     <div class="post-content e-content" itemprop="articleBody">
@@ -761,14 +820,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 </article>
 <div class="post-nav">
-<a class="previous" href="/markdown/2018/05/26/mathjax-test.html" title="Mathjax Test">Mathjax Test</a><a class="next" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="2022DASCTF X SU checkin">2022DASCTF X SU checkin</a>
+<a class="previous" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html" title="Picoctf_2022 Write-Up">Picoctf_2022 Write-Up</a><span></span>
 </div>
 <div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/markdown/2018/12/05/an-exhibit-of-markdown.html" title="2022DASCTF X SU checkin">An exhibit of Markdown</a></li>
-<li><a class="post-link" href="/markdown/2018/05/26/mathjax-test.html" title="2022DASCTF X SU checkin">Mathjax Test</a></li>
-<li><a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="2022DASCTF X SU checkin">2022DASCTF X SU checkin</a></li>
+        <li><a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="">2022DASCTF X SU checkin</a></li>
+<li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="">An exhibit of Markdown</a></li>
+<li><a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html" title="">Picoctf_2022 Write-Up</a></li>
 </ul>
     </div>
 <div class="post-comments"></div></section>

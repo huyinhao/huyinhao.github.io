@@ -46,7 +46,7 @@ yat:
 # debug: false
 
 # If you don't want transparent header, you can set false
-# header_transparent: true
+header_transparent: true
 
 # Google analytics
 # google_analytics: [Tracking ID]
@@ -55,7 +55,7 @@ yat:
 # sitemap: false
 
 # If you want to change site language, you can set lang option
-# lang: "en"  # default lang is en
+lang: "zh-CN"  # default lang is en
 
 # Translate languges
 # langs refer to https://cloud.google.com/translate/docs/languages
@@ -93,7 +93,7 @@ yat:
 # theme_color: snowwhite
 #
 # Custom color as below:
-# theme_color: "#882250"
+theme_color: "#770050"
 
 # You can choose a brand color
 # Default brand colors as below:
@@ -104,7 +104,7 @@ yat:
 # brand_color: orangered
 #
 # Custom color as below:
-# brand_color: "#1a8e42"
+# brand_color: "#1a9942"
 
 # Night/Dark mode
 # Default mode is "auto", "auto" is for auto nightshift
@@ -121,11 +121,11 @@ yat:
 
 # Code badge setting
 # You can enable or disable the code badge and so on
-# code_badge:
-#   enabled: "true"
-#   color: "#fff"
-#   background_color: "#ff4e00"
-#   text_transform: "uppercase"  # ("uppercase", "lowercase", "capitalize")
+code_badge:
+  enabled: "false"
+  color: "#fff"
+  background_color: "#ff4e00"
+  text_transform: "uppercase"  # ("uppercase", "lowercase", "capitalize")
 
 # If you want to link only specific pages in your header, uncomment
 # this and add the path to the pages in order as they should show up

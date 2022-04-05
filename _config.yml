@@ -205,5 +205,5 @@ plugins:
 # set config > remote_theme
 # unset config > theme
 
-# theme: jekyll-theme-yat
+theme: jekyll-theme-yat
 remote_theme: "jeffreytse/jekyll-theme-yat"

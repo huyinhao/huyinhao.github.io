@@ -7,21 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Archives | dayfly の note</title>
+<title>Chunk overlapping 总结 | dayfly の note</title>
 <meta name="generator" content="Jekyll v4.2.2">
-<meta property="og:title" content="Archives">
-<meta name="author" content="huyinhao">
+<meta property="og:title" content="Chunk overlapping 总结">
+<meta name="author" content="dayfly">
 <meta property="og:locale" content="zh_CN">
-<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
-<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
-<link rel="canonical" href="http://localhost:4000/archives.html">
-<meta property="og:url" content="http://localhost:4000/archives.html">
+<meta name="description" content="Off By One">
+<meta property="og:description" content="Off By One">
+<link rel="canonical" href="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
+<meta property="og:url" content="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
 <meta property="og:site_name" content="dayfly の note">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2022-03-28T00:00:00+08:00">
 <meta name="twitter:card" content="summary">
-<meta property="twitter:title" content="Archives">
+<meta property="twitter:title" content="Chunk overlapping 总结">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"huyinhao"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Archives","url":"http://localhost:4000/archives.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"dayfly"},"dateModified":"2022-03-28T00:00:00+08:00","datePublished":"2022-03-28T00:00:00+08:00","description":"Off By One","headline":"Chunk overlapping 总结","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html"},"url":"http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="shortcut icon" href="/fish.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -244,7 +245,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<header class="site-header " role="banner">
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
 
   <div class="wrapper">
     <div class="site-header-inner">
@@ -280,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var documentElement = document.documentElement;
 
     function storeScrollData() {
-      var y = getScrollPos().y;var scrollStatus = "";
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
 
       if (y <= 0) {
         scrollStatus = "top";
@@ -446,7 +457,105 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<script>
+
+
+
+
+
+
+
+
+
+
+<style>
+    html .page-banner {
+      background: #000;
+    }
+  </style>
+<style>html .page-banner {
+      height:  36.8vh;
+      min-height: 38vh;
+    }
+    html[data-scroll-status="top"] .page-banner {
+      height: 100vh;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-img > *:first-child {
+      opacity: 0.618;
+    }
+
+    html[data-theme="dark"] .page-banner .page-banner-img > *:first-child {
+      opacity: 0.443724;
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(1) {
+      font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1100px
+    }
+  </style>
+<style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(2) {
+      color: gold
+    }
+  </style>
+<section class="page-banner">
+    <div class="page-banner-img">
+<div style="background-image: url(https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg?cs=srgb&dl=pexels-damon-hall-1647177.jpg&fm=jpg)"></div>
+        <img class="img-placeholder" src="https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg?cs=srgb&dl=pexels-damon-hall-1647177.jpg&fm=jpg">
+</div>
+    <div class="wrapper">
+      <div class="page-banner-inner">
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Chunk overlapping 总结</h1>
+  <h2 class="post-subtitle">glibc 2.23, glib 2.27</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-03-28T00:00:00+08:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Mar 28, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#pwn">#pwn</a><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#chunk%20overlapping">#chunk overlapping</a><a class="post-tag" href="/tags.html#set">#set</a>
+</div></header>
+</div>
+    </div>
+  </section><script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -602,15 +711,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
         <div class="framework">
   <section class="main">
 
-     
-
-
-
-
-
-
-  
-  
+     <div class="post">
+  <section>
 
 
 
@@ -620,116 +722,198 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h2 id="off-by-one">Off By One</h2>
+
+<p>通常的利用思路是覆盖被溢出堆块的下一个堆块<code class="language-plaintext highlighter-rouge">size</code>域的最低一字节，可以扩展堆块，也可以缩减堆块，只是后者对数据构造的要求更高一些</p>
+
+<h3 id="后向扩展">后向扩展</h3>
+
+<ul>
+  <li>这里称被溢出堆块的下一个堆块为<strong>target</strong>堆块</li>
+  <li>通过<code class="language-plaintext highlighter-rouge">off by one</code>漏洞可以轻易地让<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">size</code>变大，即可让<strong>target</strong>包含高地址相邻堆块的内容</li>
+  <li>后续的利用可以配合<code class="language-plaintext highlighter-rouge">UAF</code>，<code class="language-plaintext highlighter-rouge">Unlink</code>攻击的利用</li>
+</ul>
+
+<h3 id="例题">例题：</h3>
+
+<ul>
+  <li><a href="https://github.com/scwuaptx/HITCON-Training/tree/master/LAB/lab13">HITCON Trainging lab13</a></li>
+</ul>
+
+<h2 id="off-by-null">Off By Null</h2>
+
+<ul>
+  <li>仍然存在单字节溢出，只是溢出的值为<code class="language-plaintext highlighter-rouge">'\0'</code>，可以缩减堆块</li>
+  <li>更常规地是将<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">prev_inuse</code>比特清零，达到伪造被溢出堆块被free的状态</li>
+  <li>后续构造<code class="language-plaintext highlighter-rouge">prev_size</code>和fake_chunk进行<code class="language-plaintext highlighter-rouge">unlink</code>攻击，从而达到堆块重叠</li>
+</ul>
+
+<h3 id="例题-1">例题</h3>
+
+<ul>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/poison_null_byte.c">poison null byte</a></li>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/overlapping_chunks.c">overlapping chunks</a></li>
+</ul>
+
+<h2 id="mmap-overlapping-chunks">mmap overlapping chunks</h2>
+
+<h3 id="例题-2">例题</h3>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/mmap_overlapping_chunks.c">mmap_overlapping_chunks.c</a></p>
+
+  </li>
+</ul>
 
 
+    </div>
 
-
-
-  
-
-  
-  
-  <div class="page-segments">
-  <ul class="page-segments-list">
-    
-    <h2 id="2022" class="segment-name">2022</h2>
-      
-      
-        
-        <li> 
-<span class="post-meta">Mar 28, 2022</span>
-<span>
-  <a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
-    Chunk overlapping 总结
-  </a>
-</span>
- </li>
-        
-      
-        
-        <li> 
-<span class="post-meta">Mar 27, 2022</span>
-<span>
-  <a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html">
-    An exhibit of Markdown
-  </a>
-</span>
- </li>
-        
-      
-        
-        <li> 
-<span class="post-meta">Mar 27, 2022</span>
-<span>
-  <a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html">
-    Picoctf_2022 Write-Up
-  </a>
-</span>
- </li>
-        
-      
-        
-        <li> 
-<span class="post-meta">Mar 27, 2022</span>
-<span>
-  <a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html">
-    2022DASCTF X SU checkin
-  </a>
-</span>
- </li>
-        
-      
-    
-  </ul>
+</article>
+<div class="post-nav">
+<a class="previous" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="An exhibit of Markdown">An exhibit of Markdown</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html" title="">Picoctf_2022 Write-Up</a></li>
+<li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="">An exhibit of Markdown</a></li>
+<li><a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="">Chunk overlapping 总结</a></li>
+<li><a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="">2022DASCTF X SU checkin</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
 </div>
 
 
   </section>
   <section class="sidebar" style="margin-left: 15px;">
-    <!-- Get sidebar items -->
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="common-list">
-  <ul>
-    <li>
-      <a href="/index.html">
-        All<span>4</span>
-      </a>
-    </li>
-
-    
-      <li>
-        <a href="/archives.html#h-2022">
-          2022 <span>4</span>
-        </a>
-      </li>
-    
-  </ul>
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
 </div>
 
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
 </section>
 </div>
 

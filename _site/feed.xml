@@ -1,4 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-03-27T17:23:55+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">2022DASCTF X SU checkin</title><link href="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" rel="alternate" type="text/html" title="2022DASCTF X SU checkin" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html"><![CDATA[<h2 id="检查程序">检查程序</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-04-05T15:33:17+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">Chunk overlapping 总结</title><link href="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" rel="alternate" type="text/html" title="Chunk overlapping 总结" /><published>2022-03-28T00:00:00+08:00</published><updated>2022-03-28T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html"><![CDATA[<h2 id="off-by-one">Off By One</h2>
+
+<p>通常的利用思路是覆盖被溢出堆块的下一个堆块<code class="language-plaintext highlighter-rouge">size</code>域的最低一字节，可以扩展堆块，也可以缩减堆块，只是后者对数据构造的要求更高一些</p>
+
+<h3 id="后向扩展">后向扩展</h3>
+
+<ul>
+  <li>这里称被溢出堆块的下一个堆块为<strong>target</strong>堆块</li>
+  <li>通过<code class="language-plaintext highlighter-rouge">off by one</code>漏洞可以轻易地让<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">size</code>变大，即可让<strong>target</strong>包含高地址相邻堆块的内容</li>
+  <li>后续的利用可以配合<code class="language-plaintext highlighter-rouge">UAF</code>，<code class="language-plaintext highlighter-rouge">Unlink</code>攻击的利用</li>
+</ul>
+
+<h3 id="例题">例题：</h3>
+
+<ul>
+  <li><a href="https://github.com/scwuaptx/HITCON-Training/tree/master/LAB/lab13">HITCON Trainging lab13</a></li>
+</ul>
+
+<h2 id="off-by-null">Off By Null</h2>
+
+<ul>
+  <li>仍然存在单字节溢出，只是溢出的值为<code class="language-plaintext highlighter-rouge">'\0'</code>，可以缩减堆块</li>
+  <li>更常规地是将<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">prev_inuse</code>比特清零，达到伪造被溢出堆块被free的状态</li>
+  <li>后续构造<code class="language-plaintext highlighter-rouge">prev_size</code>和fake_chunk进行<code class="language-plaintext highlighter-rouge">unlink</code>攻击，从而达到堆块重叠</li>
+</ul>
+
+<h3 id="例题-1">例题</h3>
+
+<ul>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/poison_null_byte.c">poison null byte</a></li>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/overlapping_chunks.c">overlapping chunks</a></li>
+</ul>
+
+<h2 id="mmap-overlapping-chunks">mmap overlapping chunks</h2>
+
+<h3 id="例题-2">例题</h3>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/mmap_overlapping_chunks.c">mmap_overlapping_chunks.c</a></p>
+
+  </li>
+</ul>]]></content><author><name>dayfly</name></author><category term="pwn" /><category term="pwn" /><category term="heap" /><category term="chunk overlapping" /><category term="set" /><summary type="html"><![CDATA[Off By One]]></summary></entry><entry><title type="html">2022DASCTF X SU checkin</title><link href="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" rel="alternate" type="text/html" title="2022DASCTF X SU checkin" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html"><![CDATA[<h2 id="检查程序">检查程序</h2>
 
 <p>程序语义很简单，buf数组最多有0x10的溢出，No canary，开了NX，没有任何的输出函数</p>
 

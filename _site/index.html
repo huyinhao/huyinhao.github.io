@@ -23,7 +23,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"huyinhao"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Home","name":"dayfly の note","url":"http://localhost:4000/"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="shortcut icon" href="">
+<link rel="shortcut icon" href="/fish.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
   <link rel="stylesheet" href="/assets/css/main.css">
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   <div class="wrapper">
     <div class="site-header-inner">
 <span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
-  <img class="site-favicon" title="dayfly の note" src="" onerror="this.style.display='none'">
+  <img class="site-favicon" title="dayfly の note" src="/fish.ico" onerror="this.style.display='none'">
   dayfly の note
 </a>
 </span><nav class="site-nav">
@@ -690,6 +690,95 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
+        <a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
+          Chunk overlapping 总结
+        </a>
+      </h2>
+      <div class="post-meta">
+        <span class="post-date"><i class="fa fa-calendar"></i> Mar 28, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+      </div>
+      <a class="post-excerpt" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
+        <p>
+        Off By One
+
+通常的利用思路是覆盖被溢出堆块的下一个堆块size域的最低一字节，可以扩展堆块，也可以缩减堆块，只是后者对数据构造的要求更高一些
+
+后向扩展
+
+
+  这里称被溢出堆块的下一个堆块为target堆块
+  通过off by one漏洞可以轻易地让target堆块的size变大，即可让tar... <span class="read_more">Read More</span>
+        </p>
+      </a>
+      <div class="post-tags">
+<a class="post-tag" href="/tags.html#pwn">#pwn</a><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#chunk%20overlapping">#chunk overlapping</a><a class="post-tag" href="/tags.html#set">#set</a>
+</div>
+    </li>
+<li>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class="post-title">
         <a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html">
           An exhibit of Markdown
         </a>
@@ -925,7 +1014,7 @@ int __cdecl main(int argc, const char **argv, const char **envp)
   <ul>
     <li>
       <a href="/index.html">
-        All<span>3</span>
+        All<span>4</span>
       </a>
     </li>
 
@@ -938,7 +1027,7 @@ int __cdecl main(int argc, const char **argv, const char **envp)
     
       <li>
         <a href="/categories.html#h-pwn">
-          pwn <span>2</span>
+          pwn <span>3</span>
         </a>
       </li>
     

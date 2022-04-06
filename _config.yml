@@ -203,5 +203,5 @@ plugins:
 # Remote Setup:
 # set gemfile > gem "github-pages"
 
-theme: jekyll-theme-yat
+# theme: jekyll-theme-yat
 remote_theme: "jeffreytse/jekyll-theme-yat"

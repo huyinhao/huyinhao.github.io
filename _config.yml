@@ -199,11 +199,9 @@ plugins:
 
 # Setup Note
 # Local Debug:
-# set config > theme
-# unset config > remote_theme, gemfile > gem "github-pages"
+# unset gemfile > gem "github-pages"
 # Remote Setup:
-# set config > remote_theme
-# unset config > theme
+# set gemfile > gem "github-pages"
 
 theme: jekyll-theme-yat
 remote_theme: "jeffreytse/jekyll-theme-yat"

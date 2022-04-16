@@ -3,7 +3,7 @@ layout: post
 title: Space Heroes CTF 2022 WP
 subheading: Just Pwn
 author: dayfly
-categories: pwn
+categories: wp
 banner:
   video: null
   loop: true

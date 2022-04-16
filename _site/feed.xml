@@ -1,4 +1,765 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-04-06T19:40:17+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">虎符 2022 babygame WP</title><link href="http://localhost:4000/pwn/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" rel="alternate" type="text/html" title="虎符 2022 babygame WP" /><published>2022-04-06T00:00:00+08:00</published><updated>2022-04-06T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP</id><content type="html" xml:base="http://localhost:4000/pwn/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">&lt;h2 id=&quot;题目检查&quot;&gt;题目检查&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-04-16T16:36:05+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">Fastbin Attack</title><link href="http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack.html" rel="alternate" type="text/html" title="Fastbin Attack" /><published>2022-04-15T00:00:00+08:00</published><updated>2022-04-15T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack.html">&lt;h2 id=&quot;介绍&quot;&gt;介绍&lt;/h2&gt;
+
+&lt;h2 id=&quot;fastbin-double-free&quot;&gt;Fastbin Double Free&lt;/h2&gt;
+
+&lt;h2 id=&quot;house-of-spirit&quot;&gt;House Of Spirit&lt;/h2&gt;
+
+&lt;h2 id=&quot;arbitrary-alloc&quot;&gt;Arbitrary Alloc&lt;/h2&gt;
+
+&lt;h2 id=&quot;2017-0ctf-babyheap&quot;&gt;2017 0ctf babyheap&lt;/h2&gt;
+
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/fastbin-attack/&quot;&gt;Fastbin Attack&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://uaf.io/exploitation/2017/03/19/0ctf-Quals-2017-BabyHeap2017.html&quot;&gt;babyheap2017&lt;/a&gt;&lt;/p&gt;
+
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="srand" /><summary type="html">介绍</summary></entry><entry><title type="html">GLIBC 堆概述</title><link href="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" rel="alternate" type="text/html" title="GLIBC 堆概述" /><published>2022-04-15T00:00:00+08:00</published><updated>2022-04-15T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">&lt;h2 id=&quot;1-背景&quot;&gt;1. 背景&lt;/h2&gt;
+
+&lt;p&gt;对于不同的应用来说，由于内存的需求各不相同等特性，因此目前堆的实现有很多种，具体如下&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;dlmalloc – General purpose allocator&lt;/li&gt;
+  &lt;li&gt;ptmalloc2 – glibc&lt;/li&gt;
+  &lt;li&gt;jemalloc – FreeBSD and Firefox&lt;/li&gt;
+  &lt;li&gt;tcmalloc – Google&lt;/li&gt;
+  &lt;li&gt;libumem – Solaris&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;ptmalloc2&quot;&gt;ptmalloc2&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目前 Linux 标准发行版中使用的堆分配器是 glibc 中的堆分配器：ptmalloc2&lt;/li&gt;
+  &lt;li&gt;ptmalloc2 是从 dlmalloc 中 fork 出来的&lt;/li&gt;
+  &lt;li&gt;在 fork 之后，添加了线程支持并于 2006 年发布， 此后被集成到了 glibc 源码&lt;/li&gt;
+  &lt;li&gt;主要是通过 malloc/free 函数来分配和释放内存块&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;2-malloc&quot;&gt;2. malloc&lt;/h2&gt;
+
+&lt;h3 id=&quot;第一次调用malloc&quot;&gt;第一次调用malloc&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;if size &amp;gt;= 128kb, malloc   -&amp;gt; mmap   -&amp;gt; sys_mmap&lt;/li&gt;
+  &lt;li&gt;if size &amp;lt;  128kb, malloc   -&amp;gt; brk    -&amp;gt; sys_brk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;malloc 与 free 函数背后的系统调用主要是 &lt;a href=&quot;http://man7.org/linux/man-pages/man2/sbrk.2.html&quot;&gt;(s)brk&lt;/a&gt; 函数以及 &lt;a href=&quot;http://man7.org/linux/man-pages/man2/mmap.2.html&quot;&gt;mmap, munmap&lt;/a&gt; 函数。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/figure/brk%26mmap.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;系统调用&quot;&gt;系统调用&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;brk
+    &lt;ul&gt;
+      &lt;li&gt;函数原型：int brk(void *addr)&lt;/li&gt;
+      &lt;li&gt;功能和作用：用于设置program_break指向的位置。&lt;/li&gt;
+      &lt;li&gt;我们可以通过增加 &lt;a href=&quot;https://man7.org/linux/man-pages/man2/sbrk.2.html&quot;&gt;brk&lt;/a&gt; 的大小来向操作系统申请内存。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;sbrk()
+    &lt;ul&gt;
+      &lt;li&gt;函数原型：void *sbrk(intptr_t increment)&lt;/li&gt;
+      &lt;li&gt;功能和作用：同 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brk()&lt;/code&gt;，参数可以是负数。执行成功返回上一次 program_break 的值，可以设置参数为0返回当前的 program_break.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;mmap()
+    &lt;ul&gt;
+      &lt;li&gt;函数原型：void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)&lt;/li&gt;
+      &lt;li&gt;功能和作用：当用户申请空间大于等于128kb，也就是0x20000字节时，不再使用 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brk()&lt;/code&gt; 进行分配，改为使用 &lt;a href=&quot;https://man7.org/linux/man-pages/man2/mmap.2.html&quot;&gt;mmap&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;unmmap()
+    &lt;ul&gt;
+      &lt;li&gt;函数原型：int munmap(void *addr, size_t length)&lt;/li&gt;
+      &lt;li&gt;功能和作用：对 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mmap()&lt;/code&gt; 申请的空间进行回收。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;主线程的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arena&lt;/code&gt; 又称为 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main_arena&lt;/code&gt;，包含 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;start_brk&lt;/code&gt; 和 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brk&lt;/code&gt; 中间的连续内存，当 main_arena 不够分配时，会使用 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brk()&lt;/code&gt; 进行扩展。
+子线程 arena 可以有多片连续内存，但是大小是固定的，不可以扩展，如果不够用的话需要再次调用 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mmap()&lt;/code&gt; 来分配。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;子线程arena可以有多片连续内存，但是大小是固定的，不可以扩展，如果不够用的话需要再次调用mmap()来分配&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;初始时，堆的起始地址 &lt;a href=&quot;http://elixir.free-electrons.com/linux/v3.8/source/include/linux/mm_types.h#L365&quot;&gt;start_brk&lt;/a&gt; 以及堆的当前末尾 &lt;a href=&quot;http://elixir.free-electrons.com/linux/v3.8/source/include/linux/mm_types.h#L365&quot;&gt;brk&lt;/a&gt; 指向同一地址。根据是否开启ASLR，两者的具体位置会有所不同&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;不开启 ASLR 保护时，start_brk 以及 brk 会指向 data/bss 段的结尾。&lt;/li&gt;
+  &lt;li&gt;开启 ASLR 保护时，start_brk 以及 brk 也会指向同一位置，只是这个位置是在 data/bss 段结尾后的随机偏移处。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;具体效果如下图所示&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/figure/program_virtual_address_memory_space.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当申请内存过大或者非主线程申请堆内存时， malloc 会使用 mmap 来创建独立的匿名映射段。匿名映射的目的主要是可以申请以0填充的内存，并且这块内存仅被调用进程所使用。回收这块内存时则实际使用的是 unmmap。&lt;/p&gt;
+
+&lt;p&gt;malloc 背后系统调用的详细介绍可以参考 &lt;a href=&quot;https://sploitfun.wordpress.com/2015/02/11/syscalls-used-by-malloc/&quot;&gt;Syscalls used by malloc&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;第二次调用malloc&quot;&gt;第二次调用malloc&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;只要分配的空间不超过128kb，则不会再次向内核申请空间，剩余堆空间不足以满足分配时才会调用 brk() 进行扩展。&lt;/li&gt;
+  &lt;li&gt;即使将 main_arena 全部free，也不会立即把内存还给操作系统，此时内存由 glibc 进行管理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;3-chunk&quot;&gt;3. Chunk&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chunk&lt;/code&gt; 是 glibc 管理内存的基本单元。主要分为以下几类：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alloced chunk&lt;/code&gt;：已分配正在使用中的chunk。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;free chunk&lt;/code&gt;：已经free的chunk。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top chunk&lt;/code&gt;：可以理解为地址的最高处，还没有分配过的chunk。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;last remainder chunk&lt;/code&gt;：最后一次切分遗留的堆块，为了提高内存分配的局部连续性。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在程序的执行过程中，我们称由 malloc 申请的内存为 chunk 。这块内存在 ptmalloc 内部用 malloc_chunk 结构体来表示。当程序申请的 chunk 被 free 后，会被加入到相应的空闲管理列表&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bin&lt;/code&gt;中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;无论一个 chunk 的大小如何，处于分配状态还是释放状态，它们都使用一个统一的结构&lt;/strong&gt;。虽然它们使用了同一个数据结构，但是根据是否被释放，它们的表现形式会有所不同。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+  This struct declaration is misleading (but accurate and necessary).
+  It declares a &quot;view&quot; into memory allowing access to necessary
+  fields at known offsets from a given base. See explanation below.
+*/&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;INTERNAL_SIZE_T&lt;/span&gt;      &lt;span class=&quot;n&quot;&gt;prev_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;cm&quot;&gt;/* Size of previous chunk (if free).  */&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;INTERNAL_SIZE_T&lt;/span&gt;      &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;       &lt;span class=&quot;cm&quot;&gt;/* Size in bytes, including overhead. */&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;         &lt;span class=&quot;cm&quot;&gt;/* double links -- used only if free. */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;cm&quot;&gt;/* Only used for large blocks: pointer to next larger size.  */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd_nextsize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* double links -- used only if free. */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bk_nextsize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一般来说，size_t 在 64 位中是 64 位无符号整数，32 位中是 32 位无符号整数。&lt;/li&gt;
+  &lt;li&gt;我们称 &lt;strong&gt;prev_size&lt;/strong&gt; 和 &lt;strong&gt;size&lt;/strong&gt; 字段 为 chunk header &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chunk 头&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;每个字段的具体的解释如下&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;prev_size&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;当前 chunk 的前一个 chunk 是指， &lt;strong&gt;处于较低地址，物理相邻的前一地址 chunk&lt;/strong&gt;，两个指针的地址差值即为前一chunk的实际大小(包含chunk 头)&lt;/li&gt;
+      &lt;li&gt;前一个 chunk 处于被分配状态时，&lt;strong&gt;prev_size&lt;/strong&gt; 存放前一个chunk 的用户数据。&lt;/li&gt;
+      &lt;li&gt;前一个 chunk 处于空闲状态时，&lt;strong&gt;prev_size&lt;/strong&gt; 存放前一个 chunk 的实际大小(包含chunk 头)。&lt;/li&gt;
+      &lt;li&gt;提高内存空间的利用率&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;size&lt;/strong&gt;&lt;br /&gt;
+当前 chunk 的大小，大小必须是 2 * SIZE_SZ 的整数倍。如果申请的内存大小不是 2 * SIZE_SZ 的整数倍， 会被&lt;a href=&quot;https://github.com/sploitfun/lsploits/blob/master/glibc/malloc/malloc.c#L1254&quot;&gt;转换&lt;/a&gt;为满足大小的最小的 2 * SIZE_SZ 的倍数。32 位系统中，SIZE_SZ 是 4；64 位系统中，SIZE_SZ 是 8。 该字段的&lt;strong&gt;低三个比特位&lt;/strong&gt;对 chunk 的大小没有影响，它们&lt;strong&gt;从高到低&lt;/strong&gt;分别表示：
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;NON_MAIN_ARENA(A)&lt;/strong&gt;，记录当前 chunk 是否不属于主线程，1表示不属于，0表示属于。&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;IS_MAPPED(M)&lt;/strong&gt;，记录当前 chunk 是否是由 mmap 分配的。&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;PREV_INUSE(P)&lt;/strong&gt;，记录前一个 chunk 块是否被分配。一般来说，堆中第一个被分配的内存块的 size 字段的P位都会被设置为1，以便于防止访问前面的非法内存。当一个 chunk 的 size 的 P 位为 0 时，我们能通过 prev_size 字段来获取上一个 chunk 的大小以及地址。方便进行&lt;strong&gt;空闲chunk之间的合并&lt;/strong&gt;。&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/sploitfun/lsploits/blob/4fe37d8bbea287272af701ebe98f9e08787deb3c/glibc/malloc/malloc.c#L1266&quot;&gt;标记bit位的宏定义&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;fd，bk&lt;/strong&gt;  &lt;br /&gt;
+chunk 处于分配状态时，从 fd 字段开始是用户的数据。chunk 空闲时，会被添加到对应的空闲管理链表(bin)中，其字段的含义如下
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;fd&lt;/strong&gt; 指向&lt;strong&gt;下一个&lt;/strong&gt;（非物理相邻）空闲的 chunk&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;bk&lt;/strong&gt; 指向&lt;strong&gt;上一个&lt;/strong&gt;（非物理相邻）空闲的 chunk&lt;/li&gt;
+      &lt;li&gt;通过 fd 和 bk 可以将空闲的 chunk 块加入到空闲的 chunk 块链表进行统一管理&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;fd_nextsize， bk_nextsize&lt;/strong&gt;   &lt;br /&gt;
+与 fd, bk 类似，也是只有 chunk 空闲的时候才使用，不过其用于较大的 chunk（&lt;strong&gt;large chunk&lt;/strong&gt;）。
+    &lt;ul&gt;
+      &lt;li&gt;fd_nextsize 指向&lt;strong&gt;前一个&lt;/strong&gt;与当前 chunk &lt;strong&gt;大小不同&lt;/strong&gt;的第一个空闲块，不包含 bin 的头指针。&lt;/li&gt;
+      &lt;li&gt;bk_nextsize 指向&lt;strong&gt;后一个&lt;/strong&gt;与当前 chunk &lt;strong&gt;大小不同&lt;/strong&gt;的第一个空闲块，不包含 bin 的头指针。&lt;/li&gt;
+      &lt;li&gt;一般空闲的 large chunk 在 fd 的遍历顺序中，按照&lt;strong&gt;由大到小&lt;/strong&gt;的顺序排列。&lt;strong&gt;这样做可以避免在寻找合适chunk 时挨个遍历。&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;allocated-chunk&quot;&gt;&lt;strong&gt;Allocated Chunk&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;一个已经分配的 chunk 的样子如下。&lt;strong&gt;我们称前两个字段称为 chunk header，后面的部分称为 user data。每次 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;malloc&lt;/code&gt; 申请得到的内存指针，其实指向 user data 的起始处。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;当一个 chunk 处于使用状态时，它的下一个 chunk 的 prev_size 域无效，所以下一个 chunk 的该部分也可以被当前chunk使用。&lt;strong&gt;这就是chunk中的空间复用。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unallocated&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;-------------&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;      &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;头&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;                     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;M&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;-------------&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;starts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;here&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;                          &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;                                                               &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;malloc_usable_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;next&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;                                                               &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;but&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;used&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;application&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;free-chunk&quot;&gt;&lt;strong&gt;Free Chunk&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;p&gt;被释放的 chunk 被记录在链表中（可能是循环双向链表，也可能是单向链表，由 chunk 的大小决定）。具体结构如下&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unallocated&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;                     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Forward&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Back&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Unused&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;space&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;may&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;                                                               &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;next&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;                                                               &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;                           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;Size&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bytes&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以发现，如果一个 chunk 处于 free 状态，那么会有两个位置记录其相应的大小&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;本身的 size 字段会记录&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;它物理相邻的后一个 chunk 的 prev_size 字段会记录&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;一般情况下，物理相邻的两个空闲 chunk 会被合并为一个大的 chunk 。堆管理器会通过 prev_size 字段以及 size 字段合并两个物理相邻的空闲 chunk 块。&lt;/p&gt;
+
+&lt;h3 id=&quot;top-chunk&quot;&gt;Top Chunk&lt;/h3&gt;
+
+&lt;p&gt;程序第一次进行 malloc 的时候，heap 会被分为两块，一块给用户，剩下的那块就是 top chunk。其实，所谓的top chunk 就是处于当前堆的物理地址最高的 chunk。这个 chunk 不属于任何一个 bin，它的作用在于当所有的bin 都无法满足用户请求的大小时，如果其大小不小于指定的大小，就进行分配，并将剩下的部分作为新的 top chunk。否则，就对heap进行扩展后再进行分配。在main arena中通过sbrk扩展heap，而在thread arena中通过mmap分配新的heap。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+   Top
+
+    The top-most available chunk (i.e., the one bordering the end of
+    available memory) is treated specially. It is never included in
+    any bin, is used only if no other chunk is available, and is
+    released back to the system if it is very large (see
+    M_TRIM_THRESHOLD).  Because top initially
+    points to its own bin with initial zero size, thus forcing
+    extension on the first malloc request, we avoid having any special
+    code in malloc to check whether it even exists yet. But we still
+    need to do so when getting memory from system, so we make
+    initial_top treat the bin as a legal but unusable chunk during the
+    interval between initialization and the first call to
+    sysmalloc. (This is somewhat delicate, since it relies on
+    the 2 preceding words to be zero during this interval as well.)
+ */&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Conveniently, the unsorted bin can be used as dummy top on first call */&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define initial_top(M) (unsorted_chunks(M))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;需要注意的是，top chunk 的 prev_inuse 比特位始终为1，否则其前面的chunk就会被合并到top chunk中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;初始情况下，我们可以将 unsorted chunk 作为 top chunk。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;last-remainder&quot;&gt;Last Remainder&lt;/h3&gt;
+
+&lt;p&gt;在用户使用 malloc 请求分配内存时，ptmalloc2 找到的 chunk 可能并不和申请的内存大小一致，这时候就将分割之后的剩余部分称之为 last remainder chunk，unsort bin 也会存这一块。top chunk 分割剩下的部分不会作为last remainder.&lt;/p&gt;
+
+&lt;h2 id=&quot;4-bin&quot;&gt;4. bin&lt;/h2&gt;
+
+&lt;h3 id=&quot;概述&quot;&gt;概述&lt;/h3&gt;
+
+&lt;p&gt;用户释放掉的 chunk 并不会马上归还给系统，ptmalloc 会统一管理 heap 和 mmap 映射区域中的空闲的chunk。当用户再一次请求分配内存时，ptmalloc 分配器会试图在空闲的chunk中挑选一块合适的给用户。这样可以避免频繁的系统调用，降低内存分配的开销。&lt;/p&gt;
+
+&lt;p&gt;在具体的实现中，ptmalloc 会根据空闲的 chunk 的大小以及使用状态将 chunk 初步分为4类：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fast bins&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;small bins&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;large bins&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unsorted bin&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;每类中仍然有更细的划分，相似大小的 chunk 会用双向链表链接(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fd&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bk&lt;/code&gt; 指针)起来。也就是说，在每类 bin 的内部仍然会有多个互不相关的链表来保存不同大小的 chunk。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;fastbinsY&lt;/strong&gt;：用于存放 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fastbin&lt;/code&gt; 的数组，里面有10(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NFASTBINS&lt;/code&gt;)个大小不同的 fast bin&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;bins&lt;/strong&gt;：也是一个 bin 数组，一共有126个 bin，按顺序分别是：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Bin 1 – Unsorted bin。字如其面，这里面的 chunk 没有进行排序，存储的 chunk 比较杂。&lt;/li&gt;
+  &lt;li&gt;Bin 2 to Bin 63 – Small bin。同一个 small bin 链表中的 chunk 的大小相同。两个相邻索引的 small bin 链表中的 chunk 大小相差的字节数为&lt;strong&gt;2个机器字长&lt;/strong&gt;，即32位相差8字节，64位相差16字节。&lt;/li&gt;
+  &lt;li&gt;Bin 64 to Bin 126 – Large bin。large bins 中的每一个 bin 都包含一定范围内的 chunk，其中的 chunk 按 fd 指针的顺序从大到小排列。相同大小的 chunk 同样按照最近使用顺序排列。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;此外，对于 bins 中的空闲 chunk 都会遵循一个原则：&lt;strong&gt;任意两个物理相邻的空闲chunk不能在一起, 会进行合并&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;需要注意的是，并不是所有的 chunk 被释放后就立即被放到 bin 中。ptmalloc 为了提高分配的速度，会把一些小的 chunk &lt;strong&gt;优先&lt;/strong&gt; 放到 fast bins 的容器内。&lt;strong&gt;而且，fastbin 容器中的 chunk 的使用标记总是被置位的，所以不满足上面的原则，换言之，对于 fastbin 中的 chunk 则不进行合并。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;分配顺序&lt;/strong&gt;: fast bin -&amp;gt; unsorted bin chunk -&amp;gt; small bin chunk -&amp;gt; large bin chunk&lt;/p&gt;
+
+&lt;p&gt;glibc 2.26 版本引入了 tcache 机制后，优先考虑 tcache bin chunk&lt;/p&gt;
+
+&lt;h3 id=&quot;fast-bin&quot;&gt;Fast Bin&lt;/h3&gt;
+
+&lt;p&gt;大多数程序经常会申请以及释放一些比较小的内存块。如果将一些较小的 chunk 释放之后发现存在与之相邻的空闲的 chunk 并将它们进行合并，那么当下一次再次申请相应大小的 chunk 时，就需要对 chunk 进行分割，这样就大大降低了堆的利用效率。&lt;strong&gt;因为我们把大部分时间花在了合并、分割以及中间检查的过程中。&lt;/strong&gt;因此，ptmalloc 中专门设计了 fast bin，对应的变量就是 malloc state 中的 fastbinsY&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+   Fastbins
+
+    An array of lists holding recently freed small chunks.  Fastbins
+    are not doubly linked.  It is faster to single-link them, and
+    since chunks are never removed from the middles of these lists,
+    double linking is not necessary. Also, unlike regular bins, they
+    are not even processed in FIFO order (they use faster LIFO) since
+    ordering doesn't much matter in the transient contexts in which
+    fastbins are normally used.
+
+    Chunks in fastbins keep their inuse bit set, so they cannot
+    be consolidated with other free chunks. malloc_consolidate
+    releases all chunks in fastbins and consolidates them with
+    other free chunks.
+ */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;malloc_chunk&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mfastbinptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/*
+    This is in malloc_state.
+    /* Fastbins */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mfastbinptr&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fastbinsY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NFASTBINS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;*/&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这类bin通常申请和释放的堆块都比较小，所以使用&lt;strong&gt;单链表&lt;/strong&gt;结构，&lt;strong&gt;LIFO&lt;/strong&gt;（后进先出）分配策略。&lt;/li&gt;
+  &lt;li&gt;为了速度，fast bin&lt;strong&gt;不会进行合并&lt;/strong&gt;，下一个chunk始终处于使用状态。&lt;/li&gt;
+  &lt;li&gt;在fastbinsY数组里按照从小到大的顺序排列。&lt;/li&gt;
+  &lt;li&gt;fast bin 链表的个数为10个，但是默认状态下只用前7个fast bin&lt;/li&gt;
+  &lt;li&gt;64位系统中，默认 fast bin chunk 大小在 0x20 ~ 0x80 字节(包括 chunk 头)&lt;/li&gt;
+  &lt;li&gt;当 MAX_FAST_SIZE 被设置为 0 时，系统就不会支持 fastbin&lt;/li&gt;
+  &lt;li&gt;global_max_fast 可以设置 fastbin 最多支持的大小&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;需要特别注意的是，fastbin 范围的 chunk 的 inuse 始终被置为 1。因此它们不会和其它被释放的 chunk 合并。&lt;/strong&gt;
+&lt;strong&gt;malloc_consolidate 函数可以将 fastbin 中所有能和其它 chunk 合并的 chunk 合并在一起&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/*
+	Chunks in fastbins keep their inuse bit set, so they cannot
+    be consolidated with other free chunks. malloc_consolidate
+    releases all chunks in fastbins and consolidates them with
+    other free chunks.
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;unsorted-bin&quot;&gt;Unsorted Bin&lt;/h3&gt;
+
+&lt;p&gt;unsorted bin 可以视为空闲 chunk 回归其所属 bin 之前的缓冲区。&lt;/p&gt;
+
+&lt;p&gt;其在 glibc 中具体的说明如下&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+   Unsorted chunks
+
+    All remainders from chunk splits, as well as all returned chunks,
+    are first placed in the &quot;unsorted&quot; bin. They are then placed
+    in regular bins after malloc gives them ONE chance to be used before
+    binning. So, basically, the unsorted_chunks list acts as a queue,
+    with chunks being placed on it in free (and malloc_consolidate),
+    and taken off (to be either used or placed in bins) in malloc.
+
+    The NON_MAIN_ARENA flag is never set for unsorted chunks, so it
+    does not have to be taken into account in size comparisons.
+ */&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;unsorted bin 可以视为空闲 chunk 回归其所属 bin 之前的缓冲区，这主要是为了让 ptmalloc 能够有第二次机会重新利用最近释放的chunk(第一次机会就是 fast bin 机制)。&lt;/p&gt;
+
+&lt;p&gt;利用unsorted bin 也可以加快内存的分配和释放操作，因为整个操作都不再需要花费额外的时间去查找合适的bin了。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;unsorted bin 的个数： 1个，处于 bins 数组下标 1 处。&lt;/li&gt;
+  &lt;li&gt;unsorted bin 是一个循环双向链表，遍历顺序是FIFO。&lt;/li&gt;
+  &lt;li&gt;在 unsorted bin 中，对chunk的大小并没有限制，任何大小的chunk都可以归属到 unsorted bin 中， 在 fastbin 之后。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;unsorted bin 中的空闲 chunk 处于乱序状态，主要有两个来源&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;当一个较大的 chunk 被分割成两半后，如果剩下的部分大于 MINSIZE，就会被放到 unsorted bin 中。&lt;/li&gt;
+  &lt;li&gt;释放一个不属于 fast bin 的 chunk，并且该 chunk 不和 top chunk 紧邻时，该 chunk 会被首先放到 unsorted bin 中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;small-bin&quot;&gt;Small Bin&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;small bin chunk 大小为 0x20 ~ 0x400&lt;/li&gt;
+  &lt;li&gt;small bin 链表的个数为62个，循环双向链表&lt;/li&gt;
+  &lt;li&gt;单个 smallbin 链表中的 chunk 大小都是相同的，不同 smallbin 链表中的 chunk 大小是不同的&lt;/li&gt;
+  &lt;li&gt;small bin 采用 FIFO 算法：释放时将新释放的 chunk 添加到链表的 front end(前端)，分配时从链表的rear end(尾端)中获取chunk。&lt;/li&gt;
+  &lt;li&gt;就内存的分配和释放速度而言，small bin 比 larger bin快，但比 fast bin 和 unsorted bin 慢&lt;/li&gt;
+  &lt;li&gt;物理地址相邻的free chunk需要进行合并操作，即合并成一个大的 free chunk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;small bins 中每个 chunk 的大小与其所在的 bin 的 index 的关系为：chunk_size = 2 * SIZE_SZ * index，具体如下&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;下标&lt;/th&gt;
+      &lt;th&gt;SIZE_SZ=4（32位）&lt;/th&gt;
+      &lt;th&gt;SIZE_SZ=8（64位）&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;16&lt;/td&gt;
+      &lt;td&gt;32&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;24&lt;/td&gt;
+      &lt;td&gt;48&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;32&lt;/td&gt;
+      &lt;td&gt;64&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;40&lt;/td&gt;
+      &lt;td&gt;80&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;x&lt;/td&gt;
+      &lt;td&gt;2*4*x&lt;/td&gt;
+      &lt;td&gt;2*8*x&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;63&lt;/td&gt;
+      &lt;td&gt;504&lt;/td&gt;
+      &lt;td&gt;1008&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;比如对于 64 位系统来说，下标 2 对应的 small bin 中存储的 chunk 大小为均为 32 字节。&lt;/p&gt;
+
+&lt;h3 id=&quot;large-bin&quot;&gt;Large Bin&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;large bin chunk 的大小 &amp;gt;= 1024(0x400) 字节的&lt;/li&gt;
+  &lt;li&gt;large bin链表的个数为63个，循环双向链表，被分为6组。&lt;/li&gt;
+  &lt;li&gt;largechunk使用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fd_nextsize&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bk_nextsize&lt;/code&gt;连接起来的。&lt;/li&gt;
+  &lt;li&gt;合并操作：类似于small bin。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;large bins 中一共包括 63 个 bin，每个 bin 中的 chunk 的大小不一致，而是处于一定区间范围内。此外，这 63 个 bin 被分成了 6 组，每组 bin 中的 chunk 大小之间的公差一致，具体如下：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;组&lt;/th&gt;
+      &lt;th&gt;数量&lt;/th&gt;
+      &lt;th&gt;公差&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;32&lt;/td&gt;
+      &lt;td&gt;64B&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;16&lt;/td&gt;
+      &lt;td&gt;512B&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+      &lt;td&gt;4096B&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;32768B&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;262144B&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;6&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;不限制&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;以 32 位平台的 large bin 为例，第一个 large bin 的起始 chunk 大小为 512(0x200) 字节，位于第一组，所以该bin 可以存储的 chunk 的大小范围为 [512,512+64)。&lt;/p&gt;
+
+&lt;h2 id=&quot;5-malloc_state&quot;&gt;5. malloc_state&lt;/h2&gt;
+
+&lt;p&gt;该结构用于管理堆，记录每个 arena 当前申请的内存的具体状态，比如说是否有空闲chunk，有什么大小的空闲chunk 等等。无论是 thread arena 还是 main arena，它们都只有一个 malloc state 结构。由于 thread 的 arena 可能有多个，malloc state结构会在最新申请的arena中。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注意，main arena 的 malloc_state 并不是 heap segment 的一部分，而是一个全局变量，存储在 libc.so 的数据段。泄漏libc基础地址的常见利用点。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;其结构如下&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;malloc_state&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/* Serialize access.  */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;__libc_lock_define&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mutex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Flags (formerly in max_fast).  */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Fastbins */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mfastbinptr&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fastbinsY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NFASTBINS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Base of the topmost chunk -- not otherwise kept in a bin */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mchunkptr&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* The remainder from the most recent split of a small request */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mchunkptr&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last_remainder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Normal bins packed as described above */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mchunkptr&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NBINS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Bitmap of bins, help to speed up the process of determinating if a given bin is definitely empty.*/&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;binmap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BINMAPSIZE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Linked list, points to the next arena */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;malloc_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Linked list for free arenas.  Access to this field is serialized
+       by free_list_lock in arena.c.  */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;malloc_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;next_free&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Number of threads attached to this arena.  0 if the arena is on
+       the free list.  Access to this field is serialized by
+       free_list_lock in arena.c.  */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;INTERNAL_SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attached_threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Memory allocated from the system in this arena.  */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;INTERNAL_SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;system_mem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;INTERNAL_SIZE_T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;max_system_mem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;__libc_lock_define(, mutex);
+    &lt;ul&gt;
+      &lt;li&gt;该变量用于控制程序串行访问同一个分配区，当一个线程获取了分配区之后，其它线程要想访问该分配区，就必须等待该线程分配完成后才能够使用。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;flags
+    &lt;ul&gt;
+      &lt;li&gt;flags记录了分配区的一些标志，比如 bit0 记录了分配区是否有 fast bin chunk ，bit1 标识分配区是否能返回连续的虚拟地址空间。具体如下&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;fastbinsY[NFASTBINS]
+    &lt;ul&gt;
+      &lt;li&gt;存放每个 fast chunk 链表头部的指针&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;top
+    &lt;ul&gt;
+      &lt;li&gt;指向分配区的 top chunk&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;last_reminder
+    &lt;ul&gt;
+      &lt;li&gt;最新的 chunk 分割之后剩下的那部分&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;bins
+    &lt;ul&gt;
+      &lt;li&gt;用于存储 unstored bin，small bins 和 large bins 的 chunk 链表，总计126个。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;binmap
+    &lt;ul&gt;
+      &lt;li&gt;ptmalloc 用一个 bit 来标识某一个 bin 中是否包含空闲 chunk 。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;6-arena&quot;&gt;6. Arena&lt;/h2&gt;
+
+&lt;p&gt;一般情况下，无论是主线程还是新创建的线程，在第一次申请内存时，都会请求得到 arena。&lt;/p&gt;
+&lt;h3 id=&quot;arena-数量&quot;&gt;arena 数量&lt;/h3&gt;
+
+&lt;p&gt;对于不同系统，arena数量的&lt;a href=&quot;https://github.com/sploitfun/lsploits/blob/master/glibc/malloc/arena.c#L847&quot;&gt;约束&lt;/a&gt;如下&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;For 32 bit systems:
+     Number of arena = 2 * number of cores.
+For 64 bit systems:
+     Number of arena = 8 * number of cores.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;并不是每一个线程都会有对应的 arena。因为每个系统的核数是有限的，当线程数大于核数的二倍（超线程技术）时，就必然有线程处于等待状态，没有必要为每个线程分配一个 arena。
+主线程所对应的 arena 又被称为 main arena，与其他线程不同，main_arena 并不在申请的 heap 中，而是一个全局变量，在 libc.so 的数据段。&lt;/p&gt;
+
+&lt;h2 id=&quot;7-chunk-相关宏定义&quot;&gt;7. chunk 相关宏定义&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;chunk 与 mem 指针头部的转换&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;mem指向用户得到的内存的起始位置。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* conversion from malloc headers to user pointers, and back */&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define chunk2mem(p) ((void *) ((char *) (p) + 2 * SIZE_SZ))
+#define mem2chunk(mem) ((mchunkptr)((char *) (mem) -2 * SIZE_SZ))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;最小的 chunk 大小&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* The smallest possible chunk */&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define MIN_CHUNK_SIZE (offsetof(struct malloc_chunk, fd_nextsize))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这里，offsetof 函数计算出 fd_nextsize 在 malloc_chunk 中的偏移，说明最小的 chunk 至少要包含 bk 指针。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;最小申请的堆内存大小&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;用户最小申请的内存大小必须是 2 * SIZE_SZ 的最小整数倍。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;注：就目前而看 MIN_CHUNK_SIZE 和 MINSIZE 大小是一致的，个人认为之所以要添加两个宏是为了方便以后修改 malloc_chunk 时方便一些。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* The smallest size we can malloc is an aligned minimal chunk */&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//MALLOC_ALIGN_MASK = 2 * SIZE_SZ -1&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define MINSIZE                                                                \
+    (unsigned long) (((MIN_CHUNK_SIZE + MALLOC_ALIGN_MASK) &amp;amp;                   \
+                      ~MALLOC_ALIGN_MASK))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;检查分配给用户的内存是否对齐&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;2 * SIZE_SZ 大小对齐。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* Check if m has acceptable alignment */&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// MALLOC_ALIGN_MASK = 2 * SIZE_SZ -1&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define aligned_OK(m) (((unsigned long) (m) &amp;amp; MALLOC_ALIGN_MASK) == 0)
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define misaligned_chunk(p)                                                    \
+    ((uintptr_t)(MALLOC_ALIGNMENT == 2 * SIZE_SZ ? (p) : chunk2mem(p)) &amp;amp;       \
+     MALLOC_ALIGN_MASK)
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;请求字节数判断&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+   Check if a request is so large that it would wrap around zero when
+   padded and aligned. To simplify some other code, the bound is made
+   low enough so that adding MINSIZE will also not wrap around zero.
+ */&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define REQUEST_OUT_OF_RANGE(req)                                              \
+    ((unsigned long) (req) &amp;gt;= (unsigned long) (INTERNAL_SIZE_T)(-2 * MINSIZE))
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;将用户请求内存大小转为实际分配内存大小&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* pad request bytes into a usable size -- internal version */&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//MALLOC_ALIGN_MASK = 2 * SIZE_SZ -1&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define request2size(req)                                                      \
+    (((req) + SIZE_SZ + MALLOC_ALIGN_MASK &amp;lt; MINSIZE)                           \
+         ? MINSIZE                                                             \
+         : ((req) + SIZE_SZ + MALLOC_ALIGN_MASK) &amp;amp; ~MALLOC_ALIGN_MASK)
+&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;/*  Same, except also perform argument check */&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define checked_request2size(req, sz)                                          \
+    if (REQUEST_OUT_OF_RANGE(req)) {                                           \
+        __set_errno(ENOMEM);                                                   \
+        return 0;                                                              \
+    }                                                                          \
+    (sz) = request2size(req);
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当一个 chunk 处于已分配状态时，它的物理相邻的下一个 chunk 的 prev_size 字段必然是无效的，故而这个字段就可以被当前这个 chunk 使用。这就是 ptmalloc 中 chunk 间的复用。具体流程如下&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;首先，利用 REQUEST_OUT_OF_RANGE &lt;strong&gt;判断&lt;/strong&gt; 是否可以分配用户请求的字节大小的 chunk。&lt;/li&gt;
+  &lt;li&gt;其次，需要注意的是用户请求的字节是用来存储数据的，即 chunk header 后面的部分。与此同时，由于chunk 间复用，所以可以使用下一个 chunk 的 prev_size 字段。因此，这里只需要再添加 SIZE_SZ 大小即可以完全存储内容。&lt;/li&gt;
+  &lt;li&gt;由于系统中所允许的申请的 chunk 最小是 MINSIZE，所以与其进行比较。如果不满足最低要求，那么就需要直接分配 MINSIZE 字节。&lt;/li&gt;
+  &lt;li&gt;如果大于的话，因为系统中申请的 chunk 需要 2 * SIZE_SZ 对齐，所以这里需要加上 MALLOC_ALIGN_MASK 以便于&lt;strong&gt;内存对齐&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;8-heap_info&quot;&gt;8. heap_info&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;程序刚开始执行时，每个线程是没有 heap 区域的。&lt;/li&gt;
+  &lt;li&gt;当其申请内存时，就需要一个结构来记录对应的信息，而 heap_info 的作用就是这个。&lt;/li&gt;
+  &lt;li&gt;而且当该heap的资源被使用完后，就必须得再次申请内存了。&lt;/li&gt;
+  &lt;li&gt;此外，一般申请的heap 是不连续的，因此需要记录不同heap之间的链接结构。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;heap_info 是专门为从 Memory Mapping Segment 处申请的内存准备的，即为非主线程准备的。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;主线程可以通过 sbrk() 函数扩展 program break location 获得（直到触及Memory Mapping Segment，只有一个heap，并且没有 heap_info 数据结构。&lt;/p&gt;
+
+&lt;p&gt;heap_info 在 glibc 中总体出现频率不高，了解即可。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* A heap is a single contiguous memory region holding (coalesceable)
+   malloc_chunks.  It is allocated with mmap() and always starts at an
+   address aligned to HEAP_MAX_SIZE. */&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_heap_info&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mstate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ar_ptr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* Arena for this heap. */&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_heap_info&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* Previous heap. */&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;cm&quot;&gt;/* Current size in bytes. */&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mprotect_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* Size in bytes that has been mprotected
+                           PROT_READ|PROT_WRITE.  */&lt;/span&gt;
+  &lt;span class=&quot;cm&quot;&gt;/* Make sure the following data is properly aligned, particularly
+     that sizeof (heap_info) + 2 * SIZE_SZ is a multiple of
+     MALLOC_ALIGNMENT. */&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SIZE_SZ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MALLOC_ALIGN_MASK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heap_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;9-tcache&quot;&gt;9. TCache&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;待补充&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;tcache 是 glibc 2.26 (ubuntu 17.10) 之后引入的一种技术，目的是提升堆管理的性能。但提升性能的同时舍弃了很多安全检查，也因此有了很多新的利用方式。&lt;/p&gt;
+
+&lt;p&gt;这其实和 fastbin 很像，但又不一样。&lt;/p&gt;
+
+&lt;p&gt;……&lt;/p&gt;
+
+&lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://sploitfun.wordpress.com/2015/02/10/understanding-glibc-malloc/&quot;&gt;Understanding glibc malloc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://sploitfun.wordpress.com/2015/02/11/syscalls-used-by-malloc/&quot;&gt;Syscalls used by malloc&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/heap-overview/#_4&quot;&gt;内存分配背后的系统调用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ctf-wiki.org/pwn/linux/user-mode/heap/ptmalloc2/heap-structure/&quot;&gt;ctf wiki&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/unr4v31/p/14446412.html&quot;&gt;Glibc堆管理机制基础&lt;/a&gt;&lt;/p&gt;
+
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="srand" /><summary type="html">1. 背景</summary></entry><entry><title type="html">虎符 2022 babygame WP</title><link href="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" rel="alternate" type="text/html" title="虎符 2022 babygame WP" /><published>2022-04-06T00:00:00+08:00</published><updated>2022-04-06T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">&lt;h2 id=&quot;题目检查&quot;&gt;题目检查&lt;/h2&gt;
 
 &lt;p&gt;全绿&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    Arch:     amd64-64-little
@@ -170,7 +931,7 @@
 &lt;span class=&quot;n&quot;&gt;itr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# mark, learn ctypes and x64 fmt
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>dayfly</name></author><category term="pwn" /><category term="fmt" /><category term="canary" /><category term="srand" /><summary type="html">题目检查</summary></entry><entry><title type="html">Space Heroes CTF 2022 WP</title><link href="http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html" rel="alternate" type="text/html" title="Space Heroes CTF 2022 WP" /><published>2022-04-05T00:00:00+08:00</published><updated>2022-04-05T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP</id><content type="html" xml:base="http://localhost:4000/pwn/2022/04/05/Space_Heroes_CTF_WP.html">&lt;h2 id=&quot;vader&quot;&gt;Vader&lt;/h2&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>dayfly</name></author><category term="wp" /><category term="fmt" /><category term="canary" /><category term="srand" /><summary type="html">题目检查</summary></entry><entry><title type="html">Space Heroes CTF 2022 WP</title><link href="http://0.0.0.0:4000/wp/2022/04/05/Space_Heroes_CTF_WP.html" rel="alternate" type="text/html" title="Space Heroes CTF 2022 WP" /><published>2022-04-05T00:00:00+08:00</published><updated>2022-04-05T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/04/05/Space_Heroes_CTF_WP</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/04/05/Space_Heroes_CTF_WP.html">&lt;h2 id=&quot;vader&quot;&gt;Vader&lt;/h2&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pwn&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;LibcSearcher&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LibcSearcher&lt;/span&gt;
@@ -1081,7 +1842,7 @@
 &lt;span class=&quot;n&quot;&gt;itr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# mark, learn brop, srop and fmt
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>dayfly</name></author><category term="pwn" /><category term="fmt" /><category term="orw" /><category term="brop" /><category term="srop" /><category term="house of force" /><category term="set" /><summary type="html">Vader</summary></entry><entry><title type="html">Chunk overlapping 总结</title><link href="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" rel="alternate" type="text/html" title="Chunk overlapping 总结" /><published>2022-03-28T00:00:00+08:00</published><updated>2022-03-28T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">&lt;h2 id=&quot;off-by-one&quot;&gt;Off By One&lt;/h2&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>dayfly</name></author><category term="wp" /><category term="fmt" /><category term="orw" /><category term="brop" /><category term="srop" /><category term="house of force" /><category term="set" /><summary type="html">Vader</summary></entry><entry><title type="html">Chunk overlapping 总结</title><link href="http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" rel="alternate" type="text/html" title="Chunk overlapping 总结" /><published>2022-03-28T00:00:00+08:00</published><updated>2022-03-28T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">&lt;h2 id=&quot;off-by-one&quot;&gt;Off By One&lt;/h2&gt;
 
 &lt;p&gt;通常的利用思路是覆盖被溢出堆块的下一个堆块&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;size&lt;/code&gt;域的最低一字节，可以扩展堆块，也可以缩减堆块，只是后者对数据构造的要求更高一些&lt;/p&gt;
 
@@ -1123,7 +1884,7 @@
     &lt;p&gt;&lt;a href=&quot;https://github.com/shellphish/how2heap/blob/master/glibc_2.27/mmap_overlapping_chunks.c&quot;&gt;mmap_overlapping_chunks.c&lt;/a&gt;&lt;/p&gt;
 
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="pwn" /><category term="pwn" /><category term="heap" /><category term="chunk overlapping" /><category term="set" /><summary type="html">Off By One</summary></entry><entry><title type="html">2022DASCTF X SU checkin</title><link href="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" rel="alternate" type="text/html" title="2022DASCTF X SU checkin" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html">&lt;h2 id=&quot;检查程序&quot;&gt;检查程序&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="wp" /><category term="pwn" /><category term="heap" /><category term="chunk overlapping" /><category term="set" /><summary type="html">Off By One</summary></entry><entry><title type="html">2022DASCTF X SU checkin</title><link href="http://0.0.0.0:4000/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" rel="alternate" type="text/html" title="2022DASCTF X SU checkin" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/03/27/2022DASCTF-X-SU-checkin</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/03/27/2022DASCTF-X-SU-checkin.html">&lt;h2 id=&quot;检查程序&quot;&gt;检查程序&lt;/h2&gt;
 
 &lt;p&gt;程序语义很简单，buf数组最多有0x10的溢出，No canary，开了NX，没有任何的输出函数&lt;/p&gt;
 
@@ -1242,7 +2003,7 @@
     &lt;p&gt;&lt;a href=&quot;https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/fancy-rop/&quot;&gt;Stack Pivoting&lt;/a&gt;&lt;/p&gt;
 
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="pwn" /><category term="pwn" /><category term="stack pivoting" /><summary type="html">检查程序</summary></entry><entry><title type="html">Picoctf_2022 Write-Up</title><link href="http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html" rel="alternate" type="text/html" title="Picoctf_2022 Write-Up" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up</id><content type="html" xml:base="http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html">&lt;h2 id=&quot;basic-file-exploit&quot;&gt;basic-file-exploit&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="wp" /><category term="pwn" /><category term="stack pivoting" /><summary type="html">检查程序</summary></entry><entry><title type="html">Picoctf_2022 Write-Up</title><link href="http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html" rel="alternate" type="text/html" title="Picoctf_2022 Write-Up" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html">&lt;h2 id=&quot;basic-file-exploit&quot;&gt;basic-file-exploit&lt;/h2&gt;
 
 &lt;h3 id=&quot;思路&quot;&gt;思路&lt;/h3&gt;
 
@@ -1956,7 +2717,7 @@ picoCTF{Cle4N_uP_M3m0rY_9bd1733a}
     &lt;p&gt;&lt;a href=&quot;https://ctf-wiki.org/pwn/linux/user-mode/fmtstr/fmtstr-intro/&quot;&gt;Format String&lt;/a&gt;&lt;/p&gt;
 
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="pwn" /><category term="pwn" /><category term="stack overflow" /><category term="fmt" /><category term="rop" /><summary type="html">basic-file-exploit</summary></entry><entry><title type="html">An exhibit of Markdown</title><link href="http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html" rel="alternate" type="text/html" title="An exhibit of Markdown" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown</id><content type="html" xml:base="http://localhost:4000/markdown/2022/03/27/an-exhibit-of-markdown.html">&lt;p&gt;This note demonstrates some of what &lt;a href=&quot;http://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt; is capable of doing.&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="wp" /><category term="pwn" /><category term="stack overflow" /><category term="fmt" /><category term="rop" /><summary type="html">basic-file-exploit</summary></entry><entry><title type="html">An exhibit of Markdown</title><link href="http://0.0.0.0:4000/markdown/2022/03/27/an-exhibit-of-markdown.html" rel="alternate" type="text/html" title="An exhibit of Markdown" /><published>2022-03-27T00:00:00+08:00</published><updated>2022-03-27T00:00:00+08:00</updated><id>http://0.0.0.0:4000/markdown/2022/03/27/an-exhibit-of-markdown</id><content type="html" xml:base="http://0.0.0.0:4000/markdown/2022/03/27/an-exhibit-of-markdown.html">&lt;p&gt;This note demonstrates some of what &lt;a href=&quot;http://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt; is capable of doing.&lt;/p&gt;
 
 &lt;h2 id=&quot;an-exhibit-of-markdown&quot;&gt;An exhibit of Markdown&lt;/h2&gt;
 

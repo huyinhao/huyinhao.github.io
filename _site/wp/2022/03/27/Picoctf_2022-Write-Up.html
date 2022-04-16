@@ -11,21 +11,21 @@
 <meta property="og:locale" content="zh_CN" />
 <meta name="description" content="basic-file-exploit" />
 <meta property="og:description" content="basic-file-exploit" />
-<link rel="canonical" href="http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html" />
-<meta property="og:url" content="http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html" />
+<link rel="canonical" href="http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html" />
+<meta property="og:url" content="http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html" />
 <meta property="og:site_name" content="dayfly の note" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-03-27T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Picoctf_2022 Write-Up" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"dayfly"},"dateModified":"2022-03-27T00:00:00+08:00","datePublished":"2022-03-27T00:00:00+08:00","description":"basic-file-exploit","headline":"Picoctf_2022 Write-Up","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html"},"url":"http://localhost:4000/pwn/2022/03/27/Picoctf_2022-Write-Up.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"dayfly"},"dateModified":"2022-03-27T00:00:00+08:00","datePublished":"2022-03-27T00:00:00+08:00","description":"basic-file-exploit","headline":"Picoctf_2022 Write-Up","mainEntityOfPage":{"@type":"WebPage","@id":"http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html"},"url":"http://0.0.0.0:4000/wp/2022/03/27/Picoctf_2022-Write-Up.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="shortcut icon" href="/fish.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
   <link rel="stylesheet" href="/assets/css/main.css">
-  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="dayfly の note" /><link rel="stylesheet"
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/feed.xml" title="dayfly の note" /><link rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
 <!-- and it's easy to individually load additional languages -->
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   function addBadge(block) {
-    var enabled = ('false' || 'true').toLowerCase();
+    var enabled = ('true' || 'true').toLowerCase();
     if (enabled == 'true') {
       var pre = block.parentElement;
       pre.classList.add('badge');
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   pre.badge::before {
     content: attr(data-lang);
     color: #fff;
-    background-color: #ff4e00;
+    background-color: #004e00;
     padding: 0 .5em;
     border-radius: 0 2px;
     text-transform: uppercase;
@@ -1430,10 +1430,10 @@ picoCTF{Cle4N_uP_M3m0rY_9bd1733a}
     </div>
 
 </article>
-<div class="post-nav"><a class="previous" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="2022DASCTF X SU checkin">2022DASCTF X SU checkin</a><a class="next" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="An exhibit of Markdown">An exhibit of Markdown</a></div><div class="post-related">
+<div class="post-nav"><a class="previous" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="2022DASCTF X SU checkin">2022DASCTF X SU checkin</a><a class="next" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="An exhibit of Markdown">An exhibit of Markdown</a></div><div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html" title="An exhibit of Markdown">Picoctf_2022 Write-Up</a></li><li><a class="post-link" href="/pwn/2022/04/05/Space_Heroes_CTF_WP.html" title="An exhibit of Markdown">Space Heroes CTF 2022 WP</a></li><li><a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="An exhibit of Markdown">Chunk overlapping 总结</a></li><li><a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html" title="An exhibit of Markdown">2022DASCTF X SU checkin</a></li></ul>
+        <li><a class="post-link" href="/notes/2022/04/15/Fastbin-Attack.html" title="An exhibit of Markdown">Fastbin Attack</a></li><li><a class="post-link" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html" title="An exhibit of Markdown">Space Heroes CTF 2022 WP</a></li><li><a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="An exhibit of Markdown">虎符 2022 babygame WP</a></li><li><a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" title="An exhibit of Markdown">GLIBC 堆概述</a></li></ul>
     </div><div class="post-comments"></div></section>
 </div>
 

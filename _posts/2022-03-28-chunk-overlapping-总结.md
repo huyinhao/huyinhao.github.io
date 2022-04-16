@@ -3,7 +3,7 @@ layout: post
 title: Chunk overlapping 总结 
 subheading: glibc 2.23, glib 2.27
 author: dayfly
-categories: pwn
+categories: wp
 banner:
   video: null
   loop: true

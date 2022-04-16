@@ -3,7 +3,7 @@ layout: post
 title: Picoctf_2022 Write-Up
 subheading: JUST PWN
 author: dayfly
-categories: pwn
+categories: wp
 banner:
   video: null
   loop: true

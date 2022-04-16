@@ -4,21 +4,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c"></meta><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>About | dayfly の note</title>
+<title>Chunk overlapping 总结 | dayfly の note</title>
 <meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="About" />
-<meta name="author" content="huyinhao" />
+<meta property="og:title" content="Chunk overlapping 总结" />
+<meta name="author" content="dayfly" />
 <meta property="og:locale" content="zh_CN" />
-<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
-<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
-<link rel="canonical" href="http://0.0.0.0:4000/about.html" />
-<meta property="og:url" content="http://0.0.0.0:4000/about.html" />
+<meta name="description" content="Off By One" />
+<meta property="og:description" content="Off By One" />
+<link rel="canonical" href="http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" />
+<meta property="og:url" content="http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" />
 <meta property="og:site_name" content="dayfly の note" />
-<meta property="og:type" content="website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-28T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="About" />
+<meta property="twitter:title" content="Chunk overlapping 总结" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"huyinhao"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"About","url":"http://0.0.0.0:4000/about.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"dayfly"},"dateModified":"2022-03-28T00:00:00+08:00","datePublished":"2022-03-28T00:00:00+08:00","description":"Off By One","headline":"Chunk overlapping 总结","mainEntityOfPage":{"@type":"WebPage","@id":"http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html"},"url":"http://0.0.0.0:4000/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="shortcut icon" href="/fish.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -242,7 +243,17 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<header class="site-header " role="banner">
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
 
   <div class="wrapper">
     <div class="site-header-inner"><span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
@@ -275,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var documentElement = document.documentElement;
 
     function storeScrollData() {
-      var y = getScrollPos().y;var scrollStatus = "";
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
 
       if (y <= 0) {
         scrollStatus = "top";
@@ -441,7 +452,94 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-<script>
+
+
+
+
+
+
+
+
+
+
+<style>
+    html .page-banner {
+      background: #000;
+    }
+  </style><style>html .page-banner {
+      height:  36.8vh;
+      min-height: 38vh;
+    }
+    html[data-scroll-status="top"] .page-banner {
+      height: 100vh;
+    }
+  </style><style>
+    html .page-banner .page-banner-img > *:first-child {
+      opacity: 0.618;
+    }
+
+    html[data-theme="dark"] .page-banner .page-banner-img > *:first-child {
+      opacity: 0.443724;
+    }
+  </style><style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(1) {
+      font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1100px
+    }
+  </style><style>
+    html .page-banner .page-banner-inner > *:first-child > *:nth-child(2) {
+      color: gold
+    }
+  </style><section class="page-banner">
+    <div class="page-banner-img"><div style="background-image: url(https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg?cs=srgb&dl=pexels-damon-hall-1647177.jpg&fm=jpg)"></div>
+        <img class="img-placeholder" src="https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg?cs=srgb&dl=pexels-damon-hall-1647177.jpg&fm=jpg"></div>
+    <div class="wrapper">
+      <div class="page-banner-inner"><header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Chunk overlapping 总结</h1>
+  <h2 class="post-subtitle">glibc 2.23, glib 2.27</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-03-28T00:00:00+08:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Mar 28, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+  </p><div class="post-tags"><a class="post-tag" href="/tags.html#pwn">#pwn</a><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#chunk overlapping">#chunk overlapping</a><a class="post-tag" href="/tags.html#set">#set</a></div></header>
+</div>
+    </div>
+  </section><script>
   function hashLocate(hashValue) {
     hashValue = hashValue.replace(/^.*#h-/, '');
     hashValue = decodeURIComponent(hashValue);
@@ -612,25 +710,59 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     <div class="post-content e-content" itemprop="articleBody">
 
-      <h2>About</h2>
+      <h2 id="off-by-one">Off By One</h2>
 
-<p>
-:art:&nbsp;Yet another theme for elegant writers with modern flat style
-and beautiful night mode.
-</p>
+<p>通常的利用思路是覆盖被溢出堆块的下一个堆块<code class="language-plaintext highlighter-rouge">size</code>域的最低一字节，可以扩展堆块，也可以缩减堆块，只是后者对数据构造的要求更高一些</p>
 
-<p>
-Hey, nice to meet you, you found this Jekyll theme. Here the yet another
-theme is a modern theme, and it's quite clear, clean and neat for writers
-and posts.
-</p>
+<h3 id="后向扩展">后向扩展</h3>
 
+<ul>
+  <li>这里称被溢出堆块的下一个堆块为<strong>target</strong>堆块</li>
+  <li>通过<code class="language-plaintext highlighter-rouge">off by one</code>漏洞可以轻易地让<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">size</code>变大，即可让<strong>target</strong>包含高地址相邻堆块的内容</li>
+  <li>后续的利用可以配合<code class="language-plaintext highlighter-rouge">UAF</code>，<code class="language-plaintext highlighter-rouge">Unlink</code>攻击的利用</li>
+</ul>
+
+<h3 id="例题">例题：</h3>
+
+<ul>
+  <li><a href="https://github.com/scwuaptx/HITCON-Training/tree/master/LAB/lab13">HITCON Trainging lab13</a></li>
+</ul>
+
+<h2 id="off-by-null">Off By Null</h2>
+
+<ul>
+  <li>仍然存在单字节溢出，只是溢出的值为<code class="language-plaintext highlighter-rouge">'\0'</code>，可以缩减堆块</li>
+  <li>更常规地是将<strong>target</strong>堆块的<code class="language-plaintext highlighter-rouge">prev_inuse</code>比特清零，达到伪造被溢出堆块被free的状态</li>
+  <li>后续构造<code class="language-plaintext highlighter-rouge">prev_size</code>和fake_chunk进行<code class="language-plaintext highlighter-rouge">unlink</code>攻击，从而达到堆块重叠</li>
+</ul>
+
+<h3 id="例题-1">例题</h3>
+
+<ul>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/poison_null_byte.c">poison null byte</a></li>
+  <li><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/overlapping_chunks.c">overlapping chunks</a></li>
+</ul>
+
+<h2 id="mmap-overlapping-chunks">mmap overlapping chunks</h2>
+
+<h3 id="例题-2">例题</h3>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.27/mmap_overlapping_chunks.c">mmap_overlapping_chunks.c</a></p>
+
+  </li>
+</ul>
 
 
     </div>
 
 </article>
-<div class="post-comments"></div></section>
+<div class="post-nav"><a class="previous" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="An exhibit of Markdown">An exhibit of Markdown</a><a class="next" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html" title="Space Heroes CTF 2022 WP">Space Heroes CTF 2022 WP</a></div><div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="Space Heroes CTF 2022 WP">虎符 2022 babygame WP</a></li><li><a class="post-link" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html" title="Space Heroes CTF 2022 WP">Space Heroes CTF 2022 WP</a></li><li><a class="post-link" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html" title="Space Heroes CTF 2022 WP">Picoctf_2022 Write-Up</a></li><li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="Space Heroes CTF 2022 WP">An exhibit of Markdown</a></li></ul>
+    </div><div class="post-comments"></div></section>
 </div>
 
 

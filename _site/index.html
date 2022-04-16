@@ -11,20 +11,20 @@
 <meta property="og:locale" content="zh_CN" />
 <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
 <meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
-<link rel="canonical" href="http://localhost:4000/" />
-<meta property="og:url" content="http://localhost:4000/" />
+<link rel="canonical" href="http://0.0.0.0:4000/" />
+<meta property="og:url" content="http://0.0.0.0:4000/" />
 <meta property="og:site_name" content="dayfly の note" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Home" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"huyinhao"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Home","name":"dayfly の note","url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"huyinhao"},"description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Home","name":"dayfly の note","url":"http://0.0.0.0:4000/"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="shortcut icon" href="/fish.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
   <link rel="stylesheet" href="/assets/css/main.css">
-  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="dayfly の note" /><link rel="stylesheet"
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/feed.xml" title="dayfly の note" /><link rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
 <!-- and it's easy to individually load additional languages -->
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   function addBadge(block) {
-    var enabled = ('false' || 'true').toLowerCase();
+    var enabled = ('true' || 'true').toLowerCase();
     if (enabled == 'true') {
       var pre = block.parentElement;
       pre.classList.add('badge');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   pre.badge::before {
     content: attr(data-lang);
     color: #fff;
-    background-color: #ff4e00;
+    background-color: #004e00;
     padding: 0 .5em;
     border-radius: 0 2px;
     text-transform: uppercase;
@@ -682,7 +682,190 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/pwn/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
+        <a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
+          GLIBC 堆概述
+        </a>
+      </h2>
+      <div class="post-meta">
+        <span class="post-date"><i class="fa fa-calendar"></i> Apr 15, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 1 min</span>
+      </div>
+      <a class="post-excerpt" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
+        <p>
+        1. 背景
+
+对于不同的应用来说，由于内存的需求各不相同等特性，因此目前堆的实现有很多种，具体如下
+
+
+  dlmalloc – General purpose allocator
+  ptmalloc2 – glibc
+  jemalloc – FreeBSD and Firefox
+  tcmalloc – Googl... <span class="read_more">Read More</span>
+        </p>
+      </a>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div>
+    </li><li>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class="post-title">
+        <a class="post-link" href="/notes/2022/04/15/Fastbin-Attack.html">
+          Fastbin Attack
+        </a>
+      </h2>
+      <div class="post-meta">
+        <span class="post-date"><i class="fa fa-calendar"></i> Apr 15, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+      </div>
+      <a class="post-excerpt" href="/notes/2022/04/15/Fastbin-Attack.html">
+        <p>
+        介绍
+
+Fastbin Double Free
+
+House Of Spirit
+
+Arbitrary Alloc
+
+2017 0ctf babyheap
+
+Reference
+
+
+  Fastbin Attack
+  
+    babyheap2017
+
+  
+
+ <span class="read_more">Read More</span>
+        </p>
+      </a>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div>
+    </li><li>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class="post-title">
+        <a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
           虎符 2022 babygame WP
         </a>
       </h2>
@@ -690,7 +873,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 06, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
       </div>
-      <a class="post-excerpt" href="/pwn/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
+      <a class="post-excerpt" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
         <p>
         题目检查
 
@@ -773,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/pwn/2022/04/05/Space_Heroes_CTF_WP.html">
+        <a class="post-link" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html">
           Space Heroes CTF 2022 WP
         </a>
       </h2>
@@ -781,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 05, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 29 mins</span>
       </div>
-      <a class="post-excerpt" href="/pwn/2022/04/05/Space_Heroes_CTF_WP.html">
+      <a class="post-excerpt" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html">
         <p>
         Vader
 
@@ -862,7 +1045,7 @@ b... <span class="read_more">Read More</span>
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
+        <a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
           Chunk overlapping 总结
         </a>
       </h2>
@@ -870,7 +1053,7 @@ b... <span class="read_more">Read More</span>
         <span class="post-date"><i class="fa fa-calendar"></i> Mar 28, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
       </div>
-      <a class="post-excerpt" href="/pwn/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
+      <a class="post-excerpt" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html">
         <p>
         Off By One
 
@@ -1030,7 +1213,7 @@ Note: Feel free to play with this page. Unlike regular notes, this doesn’t aut
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html">
+        <a class="post-link" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html">
           Picoctf_2022 Write-Up
         </a>
       </h2>
@@ -1038,7 +1221,7 @@ Note: Feel free to play with this page. Unlike regular notes, this doesn’t aut
         <span class="post-date"><i class="fa fa-calendar"></i> Mar 27, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 2 mins</span>
       </div>
-      <a class="post-excerpt" href="/pwn/2022/03/27/Picoctf_2022-Write-Up.html">
+      <a class="post-excerpt" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html">
         <p>
         basic-file-exploit
 
@@ -1120,7 +1303,7 @@ if ((entry_number = strtol(entry, NULL, 10)) == 0)... <span class="read_more">Re
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html">
+        <a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html">
           2022DASCTF X SU checkin
         </a>
       </h2>
@@ -1128,7 +1311,7 @@ if ((entry_number = strtol(entry, NULL, 10)) == 0)... <span class="read_more">Re
         <span class="post-date"><i class="fa fa-calendar"></i> Mar 27, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
       </div>
-      <a class="post-excerpt" href="/pwn/2022/03/27/2022DASCTF-X-SU-checkin.html">
+      <a class="post-excerpt" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html">
         <p>
         检查程序
 
@@ -1175,7 +1358,7 @@ int __cdecl main(int argc, const char **argv, const char **envp)
   <ul>
     <li>
       <a href="/index.html">
-        All<span>6</span>
+        All<span>8</span>
       </a>
     </li>
 
@@ -1187,8 +1370,14 @@ int __cdecl main(int argc, const char **argv, const char **envp)
       </li>
     
       <li>
-        <a href="/categories.html#h-pwn">
-          pwn <span>5</span>
+        <a href="/categories.html#h-notes">
+          notes <span>2</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/categories.html#h-wp">
+          wp <span>5</span>
         </a>
       </li>
     

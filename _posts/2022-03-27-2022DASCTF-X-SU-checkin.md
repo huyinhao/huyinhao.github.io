@@ -3,7 +3,7 @@ layout: post
 title: 2022DASCTF X SU checkin
 subheading: 三月春季挑战赛
 author: dayfly
-categories: pwn
+categories: wp
 banner:
   video: null
   loop: true

@@ -1630,14 +1630,136 @@ document.addEventListener('DOMContentLoaded', function(event) {
 <div class="post-nav"><a class="previous" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="Chunk overlapping 总结">Chunk overlapping 总结</a><a class="next" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="虎符 2022 babygame WP">虎符 2022 babygame WP</a></div><div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html" title="虎符 2022 babygame WP">Picoctf_2022 Write-Up</a></li><li><a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="虎符 2022 babygame WP">Chunk overlapping 总结</a></li><li><a class="post-link" href="/notes/2022/04/15/Fastbin-Attack.html" title="虎符 2022 babygame WP">Fastbin Attack</a></li><li><a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="虎符 2022 babygame WP">虎符 2022 babygame WP</a></li></ul>
+        <li><a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="虎符 2022 babygame WP">2022DASCTF X SU checkin</a></li><li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="虎符 2022 babygame WP">An exhibit of Markdown</a></li><li><a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" title="虎符 2022 babygame WP">GLIBC 堆概述</a></li><li><a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="虎符 2022 babygame WP">Chunk overlapping 总结</a></li></ul>
     </div><div class="post-comments"></div></section>
 </div>
 
 
   </section>
   <section class="sidebar" style="margin-left: 15px;">
-    <!-- Get sidebar items --></section>
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
 </div>
 
       </div>

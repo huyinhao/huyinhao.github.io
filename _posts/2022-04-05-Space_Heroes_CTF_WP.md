@@ -17,7 +17,7 @@ banner:
   heading_style: "font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1400px"
   subheading_style: "color: gold"
 tags: [fmt, orw, brop, srop, house of force, set]
-sidebar: []
+# sidebar: []
 ---
 
 ## Vader

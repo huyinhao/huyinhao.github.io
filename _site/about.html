@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   function addBadge(block) {
-    var enabled = ('true' || 'true').toLowerCase();
+    var enabled = ('false' || 'true').toLowerCase();
     if (enabled == 'true') {
       var pre = block.parentElement;
       pre.classList.add('badge');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   pre.badge::before {
     content: attr(data-lang);
     color: #fff;
-    background-color: #004e00;
+    background-color: #ff4e00;
     padding: 0 .5em;
     border-radius: 0 2px;
     text-transform: uppercase;

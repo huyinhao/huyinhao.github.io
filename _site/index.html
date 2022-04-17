@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   }
 
   function addBadge(block) {
-    var enabled = ('true' || 'true').toLowerCase();
+    var enabled = ('false' || 'true').toLowerCase();
     if (enabled == 'true') {
       var pre = block.parentElement;
       pre.classList.add('badge');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   pre.badge::before {
     content: attr(data-lang);
     color: #fff;
-    background-color: #004e00;
+    background-color: #ff4e00;
     padding: 0 .5em;
     border-radius: 0 2px;
     text-transform: uppercase;
@@ -774,30 +774,23 @@ document.addEventListener('DOMContentLoaded', function(event) {
       </h2>
       <div class="post-meta">
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 15, 2022</span>
-        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
       </div>
       <a class="post-excerpt" href="/notes/2022/04/15/Fastbin-Attack.html">
         <p>
         介绍
 
-Fastbin Double Free
-
-House Of Spirit
-
-Arbitrary Alloc
-
-2017 0ctf babyheap
-
-Reference
+fastbin attack 是指所有基于 fastbin 机制的漏洞利用方法。这类利用的前提是：
 
 
-  Fastbin Attack
-  
-    babyheap2017
+  存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞
+  漏洞发生于 fastbin 类型的 chunk 中
 
-  
 
- <span class="read_more">Read More</span>
+fastbin attack 具体有以下几个分类：
+
+
+  Fastbin Do... <span class="read_more">Read More</span>
         </p>
       </a>
       <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div>

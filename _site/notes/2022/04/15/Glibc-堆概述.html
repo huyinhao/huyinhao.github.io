@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
     <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 1 min</span>
-  </p><div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div></header>
+  </p><div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#malloc">#malloc</a><a class="post-tag" href="/tags.html#free">#free</a><a class="post-tag" href="/tags.html#fastbin">#fastbin</a><a class="post-tag" href="/tags.html#small bin">#small bin</a><a class="post-tag" href="/tags.html#unsorted bin">#unsorted bin</a><a class="post-tag" href="/tags.html#large bin">#large bin</a></div></header>
 </div>
     </div>
   </section><script>
@@ -1008,7 +1008,7 @@ chunk 处于分配状态时，从 fd 字段开始是用户的数据。chunk 空�
 
 <p>需要注意的是，并不是所有的 chunk 被释放后就立即被放到 bin 中。ptmalloc 为了提高分配的速度，会把一些小的 chunk <strong>优先</strong> 放到 fast bins 的容器内。<strong>而且，fastbin 容器中的 chunk 的使用标记总是被置位的，所以不满足上面的原则，换言之，对于 fastbin 中的 chunk 则不进行合并。</strong></p>
 
-<p><strong>分配顺序</strong>: fast bin -&gt; unsorted bin chunk -&gt; small bin chunk -&gt; large bin chunk</p>
+<p><strong>分配顺序</strong>: fast bin chunk -&gt; unsorted bin chunk -&gt; small bin chunk -&gt; large bin chunk -&gt; top chunk</p>
 
 <p>glibc 2.26 版本引入了 tcache 机制后，优先考虑 tcache bin chunk</p>
 
@@ -1459,10 +1459,10 @@ For 64 bit systems:
     </div>
 
 </article>
-<div class="post-nav"><a class="previous" href="/notes/2022/04/15/Fastbin-Attack.html" title="Fastbin Attack">Fastbin Attack</a><span></span></div><div class="post-related">
+<div class="post-nav"><a class="previous" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="虎符 2022 babygame WP">虎符 2022 babygame WP</a><a class="next" href="/notes/2022/04/17/Fastbin-Attack.html" title="Fastbin Attack">Fastbin Attack</a></div><div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="">2022DASCTF X SU checkin</a></li><li><a class="post-link" href="/wp/2022/03/28/chunk-overlapping-%E6%80%BB%E7%BB%93.html" title="">Chunk overlapping 总结</a></li><li><a class="post-link" href="/wp/2022/04/05/Space_Heroes_CTF_WP.html" title="">Space Heroes CTF 2022 WP</a></li><li><a class="post-link" href="/markdown/2022/03/27/an-exhibit-of-markdown.html" title="">An exhibit of Markdown</a></li></ul>
+        <li><a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" title="Fastbin Attack">GLIBC 堆概述</a></li><li><a class="post-link" href="/notes/2022/04/17/Fastbin-Attack.html" title="Fastbin Attack">Fastbin Attack</a></li><li><a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" title="Fastbin Attack">虎符 2022 babygame WP</a></li><li><a class="post-link" href="/wp/2022/03/27/2022DASCTF-X-SU-checkin.html" title="Fastbin Attack">2022DASCTF X SU checkin</a></li></ul>
     </div><div class="post-comments"></div></section>
 </div>
 

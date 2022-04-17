@@ -682,28 +682,32 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
-          GLIBC 堆概述
+        <a class="post-link" href="/notes/2022/04/17/Fastbin-Attack.html">
+          Fastbin Attack
         </a>
       </h2>
       <div class="post-meta">
-        <span class="post-date"><i class="fa fa-calendar"></i> Apr 15, 2022</span>
-        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 1 min</span>
+        <span class="post-date"><i class="fa fa-calendar"></i> Apr 17, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
       </div>
-      <a class="post-excerpt" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
+      <a class="post-excerpt" href="/notes/2022/04/17/Fastbin-Attack.html">
         <p>
-        1. 背景
+        介绍
 
-对于不同的应用来说，由于内存的需求各不相同等特性，因此目前堆的实现有很多种，具体如下
+fastbin attack 是指所有基于 fastbin 机制的漏洞利用方法。这类利用的前提是：
 
 
-  dlmalloc – General purpose allocator
-  ptmalloc2 – glibc
-  jemalloc – FreeBSD and Firefox
-  tcmalloc – Googl... <span class="read_more">Read More</span>
+  存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞
+  漏洞发生于 fastbin 类型的 chunk 中
+
+
+fastbin attack 具体有以下几个分类：
+
+
+  Fastbin Do... <span class="read_more">Read More</span>
         </p>
       </a>
-      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#fastbin">#fastbin</a><a class="post-tag" href="/tags.html#double free">#double free</a></div>
     </li><li>
       
 
@@ -768,32 +772,28 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/notes/2022/04/15/Fastbin-Attack.html">
-          Fastbin Attack
+        <a class="post-link" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
+          GLIBC 堆概述
         </a>
       </h2>
       <div class="post-meta">
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 15, 2022</span>
-        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 hour 1 min</span>
       </div>
-      <a class="post-excerpt" href="/notes/2022/04/15/Fastbin-Attack.html">
+      <a class="post-excerpt" href="/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">
         <p>
-        介绍
+        1. 背景
 
-fastbin attack 是指所有基于 fastbin 机制的漏洞利用方法。这类利用的前提是：
-
-
-  存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞
-  漏洞发生于 fastbin 类型的 chunk 中
+对于不同的应用来说，由于内存的需求各不相同等特性，因此目前堆的实现有很多种，具体如下
 
 
-fastbin attack 具体有以下几个分类：
-
-
-  Fastbin Do... <span class="read_more">Read More</span>
+  dlmalloc – General purpose allocator
+  ptmalloc2 – glibc
+  jemalloc – FreeBSD and Firefox
+  tcmalloc – Googl... <span class="read_more">Read More</span>
         </p>
       </a>
-      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#srand">#srand</a></div>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#malloc">#malloc</a><a class="post-tag" href="/tags.html#free">#free</a><a class="post-tag" href="/tags.html#fastbin">#fastbin</a><a class="post-tag" href="/tags.html#small bin">#small bin</a><a class="post-tag" href="/tags.html#unsorted bin">#unsorted bin</a><a class="post-tag" href="/tags.html#large bin">#large bin</a></div>
     </li><li>
       
 

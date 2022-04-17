@@ -9,14 +9,14 @@ banner:
   loop: true
   volume: 1
   start_at: 8.5
-  image: https://images.pexels.com/photos/1192671/pexels-photo-1192671.jpeg?cs=srgb&dl=pexels-nathan-cowley-1192671.jpg&fm=jpg
+  image: https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
   opacity: 1
   background: "#000"
   height: "100vh"
   min_height: "38vh"
   heading_style: "font-size: 5em; font-weight: bold; text-decoration: none; min-width: 1100px"
   subheading_style: "color: gold"
-tags: [heap, srand]
+tags: [heap, fastbin, double free]
 # sidebar: []
 ---
 
@@ -316,13 +316,13 @@ fastbins
 0x20: 0x405000 ◂— 0x405000
 0x30: 0x0
 pwndbg> x/20gx 0x405000
-0x405000:       0x0000000000000000      0x0000000000000021
+0x405000:       0x0000000000000000      0x0000000000000021    ----> chunk 0
 0x405010:       0x0000000000405000      0x0000000000000000
-0x405020:       0x0000000000000000      0x0000000000000021
+0x405020:       0x0000000000000000      0x0000000000000021    ----> chunk 1
 0x405030:       0x0000000000405000      0x0000000000000000
-0x405040:       0x0000000000000000      0x0000000000000021
+0x405040:       0x0000000000000000      0x0000000000000021    ----> chunk 2
 0x405050:       0x0000000000000000      0x0000000000000000
-0x405060:       0x0000000000000000      0x0000000000020fa1
+0x405060:       0x0000000000000000      0x0000000000020fa1    ----> top chunk
 ```
 
 ## 2017 0ctf babyheap

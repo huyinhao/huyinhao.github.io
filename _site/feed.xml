@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-04-17T13:38:01+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">Fastbin Attack</title><link href="http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack.html" rel="alternate" type="text/html" title="Fastbin Attack" /><published>2022-04-15T00:00:00+08:00</published><updated>2022-04-15T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/15/Fastbin-Attack.html">&lt;h2 id=&quot;介绍&quot;&gt;介绍&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" hreflang="zh-CN" /><updated>2022-04-17T14:01:53+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">dayfly の note</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>huyinhao</name></author><entry><title type="html">Fastbin Attack</title><link href="http://0.0.0.0:4000/notes/2022/04/17/Fastbin-Attack.html" rel="alternate" type="text/html" title="Fastbin Attack" /><published>2022-04-17T00:00:00+08:00</published><updated>2022-04-17T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/17/Fastbin-Attack</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/17/Fastbin-Attack.html">&lt;h2 id=&quot;介绍&quot;&gt;介绍&lt;/h2&gt;
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fastbin attack&lt;/code&gt; 是指所有基于 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fastbin&lt;/code&gt; 机制的漏洞利用方法。这类利用的前提是：&lt;/p&gt;
 
@@ -291,13 +291,13 @@ fastbins
 0x20: 0x405000 ◂— 0x405000
 0x30: 0x0
 pwndbg&amp;gt; x/20gx 0x405000
-0x405000:       0x0000000000000000      0x0000000000000021
+0x405000:       0x0000000000000000      0x0000000000000021    ----&amp;gt; chunk 0
 0x405010:       0x0000000000405000      0x0000000000000000
-0x405020:       0x0000000000000000      0x0000000000000021
+0x405020:       0x0000000000000000      0x0000000000000021    ----&amp;gt; chunk 1
 0x405030:       0x0000000000405000      0x0000000000000000
-0x405040:       0x0000000000000000      0x0000000000000021
+0x405040:       0x0000000000000000      0x0000000000000021    ----&amp;gt; chunk 2
 0x405050:       0x0000000000000000      0x0000000000000000
-0x405060:       0x0000000000000000      0x0000000000020fa1
+0x405060:       0x0000000000000000      0x0000000000020fa1    ----&amp;gt; top chunk
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;2017-0ctf-babyheap&quot;&gt;2017 0ctf babyheap&lt;/h2&gt;
@@ -367,7 +367,7 @@ pwndbg&amp;gt; x/20gx 0x405000
     &lt;p&gt;&lt;a href=&quot;https://uaf.io/exploitation/2017/03/19/0ctf-Quals-2017-BabyHeap2017.html&quot;&gt;babyheap2017&lt;/a&gt;&lt;/p&gt;
 
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="srand" /><summary type="html">介绍</summary></entry><entry><title type="html">GLIBC 堆概述</title><link href="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" rel="alternate" type="text/html" title="GLIBC 堆概述" /><published>2022-04-15T00:00:00+08:00</published><updated>2022-04-15T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">&lt;h2 id=&quot;1-背景&quot;&gt;1. 背景&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="fastbin" /><category term="double free" /><summary type="html">介绍</summary></entry><entry><title type="html">GLIBC 堆概述</title><link href="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html" rel="alternate" type="text/html" title="GLIBC 堆概述" /><published>2022-04-15T00:00:00+08:00</published><updated>2022-04-15T00:00:00+08:00</updated><id>http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0</id><content type="html" xml:base="http://0.0.0.0:4000/notes/2022/04/15/Glibc-%E5%A0%86%E6%A6%82%E8%BF%B0.html">&lt;h2 id=&quot;1-背景&quot;&gt;1. 背景&lt;/h2&gt;
 
 &lt;p&gt;对于不同的应用来说，由于内存的需求各不相同等特性，因此目前堆的实现有很多种，具体如下&lt;/p&gt;
 
@@ -665,7 +665,7 @@ chunk 处于分配状态时，从 fd 字段开始是用户的数据。chunk 空�
 
 &lt;p&gt;需要注意的是，并不是所有的 chunk 被释放后就立即被放到 bin 中。ptmalloc 为了提高分配的速度，会把一些小的 chunk &lt;strong&gt;优先&lt;/strong&gt; 放到 fast bins 的容器内。&lt;strong&gt;而且，fastbin 容器中的 chunk 的使用标记总是被置位的，所以不满足上面的原则，换言之，对于 fastbin 中的 chunk 则不进行合并。&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;分配顺序&lt;/strong&gt;: fast bin -&amp;gt; unsorted bin chunk -&amp;gt; small bin chunk -&amp;gt; large bin chunk&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分配顺序&lt;/strong&gt;: fast bin chunk -&amp;gt; unsorted bin chunk -&amp;gt; small bin chunk -&amp;gt; large bin chunk -&amp;gt; top chunk&lt;/p&gt;
 
 &lt;p&gt;glibc 2.26 版本引入了 tcache 机制后，优先考虑 tcache bin chunk&lt;/p&gt;
 
@@ -1110,7 +1110,7 @@ For 64 bit systems:
     &lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/unr4v31/p/14446412.html&quot;&gt;Glibc堆管理机制基础&lt;/a&gt;&lt;/p&gt;
 
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="srand" /><summary type="html">1. 背景</summary></entry><entry><title type="html">虎符 2022 babygame WP</title><link href="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" rel="alternate" type="text/html" title="虎符 2022 babygame WP" /><published>2022-04-06T00:00:00+08:00</published><updated>2022-04-06T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">&lt;h2 id=&quot;题目检查&quot;&gt;题目检查&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>dayfly</name></author><category term="notes" /><category term="heap" /><category term="malloc" /><category term="free" /><category term="fastbin" /><category term="small bin" /><category term="unsorted bin" /><category term="large bin" /><summary type="html">1. 背景</summary></entry><entry><title type="html">虎符 2022 babygame WP</title><link href="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html" rel="alternate" type="text/html" title="虎符 2022 babygame WP" /><published>2022-04-06T00:00:00+08:00</published><updated>2022-04-06T00:00:00+08:00</updated><id>http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP</id><content type="html" xml:base="http://0.0.0.0:4000/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">&lt;h2 id=&quot;题目检查&quot;&gt;题目检查&lt;/h2&gt;
 
 &lt;p&gt;全绿&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    Arch:     amd64-64-little

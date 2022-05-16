@@ -1,6 +1,6 @@
 ---
 layout: post
-title: '*CTF 2022 examination WP'
+title: 'STARCTF 2022 examination WP'
 subheading: heap feng shui
 author: dayfly
 categories: WP
@@ -9,7 +9,7 @@ banner:
   loop: true
   volume: 1
   start_at: 8.5
-  image: https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2
+  image: https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg
   opacity: 1
   background: "#000"
   height: "100vh"

@@ -682,32 +682,31 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/notes/2022/04/17/Fastbin-Attack.html">
-          Fastbin Attack
+        <a class="post-link" href="/wp/2022/05/16/hfctf_2022_mva.html">
+          HFCTF 2022 MVA
         </a>
       </h2>
       <div class="post-meta">
-        <span class="post-date"><i class="fa fa-calendar"></i> Apr 17, 2022</span>
-        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
+        <span class="post-date"><i class="fa fa-calendar"></i> May 16, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 31 mins</span>
       </div>
-      <a class="post-excerpt" href="/notes/2022/04/17/Fastbin-Attack.html">
+      <a class="post-excerpt" href="/wp/2022/05/16/hfctf_2022_mva.html">
         <p>
         介绍
 
-fastbin attack 是指所有基于 fastbin 机制的漏洞利用方法。这类利用的前提是：
+一般 VM PWN 的漏洞基本都是边界检测的问题，比如: 符号位的检测, SP 的检测啊，寄存器指针的检测等等
 
+正式分析程序之前，需要手动设置 IDA, 修复 switch 结构的识别，可以参照 在 IDA Pro 中恢复 switch 语句
 
-  存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞
-  漏洞发生于 fastbin 类型的 chunk 中
+程序分析
 
+稍做处理后，程序大概是这样
 
-fastbin attack 具体有以下几个分类：
-
-
-  Fastbin Do... <span class="read_more">Read More</span>
+  puts("[+] Welcome to MVA, input your code now :");
+... <span class="read_more">Read More</span>
         </p>
       </a>
-      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#fastbin">#fastbin</a><a class="post-tag" href="/tags.html#double free">#double free</a></div>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#VM">#VM</a></div>
     </li><li>
       
 
@@ -772,15 +771,15 @@ fastbin attack 具体有以下几个分类：
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/wp/2022/04/17/ctf_2022_examination_WP.html">
-          *CTF 2022 examination WP
+        <a class="post-link" href="/wp/2022/04/17/Starctf_2022_examination_WP.html">
+          STARCTF 2022 examination WP
         </a>
       </h2>
       <div class="post-meta">
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 17, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 34 mins</span>
       </div>
-      <a class="post-excerpt" href="/wp/2022/04/17/ctf_2022_examination_WP.html">
+      <a class="post-excerpt" href="/wp/2022/04/17/Starctf_2022_examination_WP.html">
         <p>
         介绍
 
@@ -797,6 +796,96 @@ int __fastcall pray(int a1)
         </p>
       </a>
       <div class="post-tags"><a class="post-tag" href="/tags.html#heap feng shui">#heap feng shui</a><a class="post-tag" href="/tags.html#chunk overlapping">#chunk overlapping</a></div>
+    </li><li>
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 class="post-title">
+        <a class="post-link" href="/notes/2022/04/17/Fastbin-Attack.html">
+          Fastbin Attack
+        </a>
+      </h2>
+      <div class="post-meta">
+        <span class="post-date"><i class="fa fa-calendar"></i> Apr 17, 2022</span>
+        <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
+      </div>
+      <a class="post-excerpt" href="/notes/2022/04/17/Fastbin-Attack.html">
+        <p>
+        介绍
+
+fastbin attack 是指所有基于 fastbin 机制的漏洞利用方法。这类利用的前提是：
+
+
+  存在堆溢出、use-after-free 等能控制 chunk 内容的漏洞
+  漏洞发生于 fastbin 类型的 chunk 中
+
+
+fastbin attack 具体有以下几个分类：
+
+
+  Fastbin Do... <span class="read_more">Read More</span>
+        </p>
+      </a>
+      <div class="post-tags"><a class="post-tag" href="/tags.html#heap">#heap</a><a class="post-tag" href="/tags.html#fastbin">#fastbin</a><a class="post-tag" href="/tags.html#double free">#double free</a></div>
     </li><li>
       
 
@@ -947,15 +1036,15 @@ int __fastcall pray(int a1)
 
 
 <h2 class="post-title">
-        <a class="post-link" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
-          虎符 2022 babygame WP
+        <a class="post-link" href="/wp/2022/04/06/hfctf-2022-babygame-WP.html">
+          HFCTF 2022 babygame WP
         </a>
       </h2>
       <div class="post-meta">
         <span class="post-date"><i class="fa fa-calendar"></i> Apr 06, 2022</span>
         <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
       </div>
-      <a class="post-excerpt" href="/wp/2022/04/06/%E8%99%8E%E7%AC%A6-2022-babygame-WP.html">
+      <a class="post-excerpt" href="/wp/2022/04/06/hfctf-2022-babygame-WP.html">
         <p>
         题目检查
 
@@ -1440,14 +1529,14 @@ int __cdecl main(int argc, const char **argv, const char **envp)
   <ul>
     <li>
       <a href="/index.html">
-        All<span>9</span>
+        All<span>10</span>
       </a>
     </li>
 
     
       <li>
         <a href="/categories.html#h-WP">
-          WP <span>1</span>
+          WP <span>2</span>
         </a>
       </li>
     

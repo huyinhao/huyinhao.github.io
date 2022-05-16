@@ -9,7 +9,7 @@ banner:
   loop: true
   volume: 0.8
   start_at: 8.5
-  image: https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg?cs=srgb&dl=pexels-damon-hall-1647177.jpg&fm=jpg
+  image: https://images.pexels.com/photos/1647177/pexels-photo-1647177.jpeg
   opacity: 0.618
   background: "#000"
   height: "100vh"

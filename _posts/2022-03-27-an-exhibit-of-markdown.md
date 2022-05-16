@@ -8,7 +8,7 @@ banner:
   loop: true
   volume: 0.8
   start_at: 8.5
-  image: https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260
+  image: https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg
   opacity: 0.618
   background: "#000"
   height: "100vh"

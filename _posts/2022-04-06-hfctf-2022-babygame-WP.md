@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 虎符 2022 babygame WP
+title: HFCTF 2022 babygame WP
 subheading: 
 author: dayfly
 categories: wp
